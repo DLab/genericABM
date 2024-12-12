@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	tableName="ficha_cliente_detalle">
+	
+  <field property="idCliente"             sqlName="fcd_fdc_idcliente"   		type="String"  	key="true" akey="true"/>
+  <field property="correlativo"           sqlName="fcd_correlativo"     		type="Integer" 	key="true"/>
+  <field property="valorCondicion"        sqlName="fcd_valor"      				type="String"/>
+  <field property="fechaInicio"           sqlName="fcd_inicio"      			type="Date"/>
+  <field property="fechaTermino"          sqlName="fcd_termino"     			type="Date"/>
+  <field property="codigoCondicion"       sqlName="fcd_cnd_codigo"      		type="String" 	key="true"/>
+  
+  <field property="expresadoEn"           sqlNameRef="cnd_prm_expresadoen"  	type="Join" typeRef="String" joinRef="join1"/>
+  
+  <join name="join1" tableName="condicion">
+      <field sqlName="fcd_cnd_codigo" sqlNameRef="cnd_codigo" />
+  </join>
+  
+  
+</Entity>

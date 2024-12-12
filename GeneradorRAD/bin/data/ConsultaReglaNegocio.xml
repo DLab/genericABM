@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	sqlName="ConsultaReglaDeNegocio">
+
+  <field property="codigo"				  type="String"/>
+  <field property="expresionVigencia"     type="String"/>
+  <field property="expresionCondicion"    type="String"/>
+  <field property="codigoTarifa"    	  type="String"/>
+
+  <query id="consulta">
+  	 <field property="fecha" 		      type="Timestamp"/>
+  	 <field property="codigoProducto"     type="String"/>
+  	 <field property="codigoCanal"        type="String"/>
+  	 <field property="rutCliente"         type="String"/>
+  	 <field property="tipoTarifa"         type="String"/>
+  	 <field property="evento"             type="String"/>
+  </query> 
+  
+  <sql>
+  <![CDATA[select productos.rdn_codigo
+     , productos.rdn_expvigencia 
+     , productos.rdn_expcondicion 
+     , tarifa.trf_codigo    
+from 
+(select rdn_codigo  as rdn_codigo
+     , rdn_expvigencia
+     , rdn_expcondicion
+from   regla_negocio
+     left join regla_producto_detalle on rpd_rdn_codigo = rdn_codigo
+where  rdn_est_codigo = 'ACTI'
+and    rdn_inicio <= :fecha 
+and    (rdn_termino is null or rdn_termino >= :fecha ) 
+and    (rpd_correlativo is null 
+        or rpd_prd_codigo = :codigoProducto
+        or :codigoProducto in (select gpd_prd_codigo
+						  from   grupo_producto_detalle, grupo_version
+						  where  gpd_grp_codigo = gvr_grp_codigo
+                          and    gpd_gvr_correlativo = gvr_correlativo
+                          and    gpd_grp_codigo = rpd_grp_codigo
+                          and    gvr_inicio     <= :fecha
+                          and    gvr_est_codigo = 'ACTI'
+                          group by  gpd_prd_codigo, gvr_inicio
+                          having  gvr_inicio = max(gvr_inicio)))) productos, 
+(select rdn_codigo as rdn_codigo
+from   regla_negocio
+      left join regla_canal_detalle on rcd_rdn_codigo = rdn_codigo
+where  rdn_est_codigo = 'ACTI'
+and    rdn_inicio <= :fecha 
+and    (rdn_termino is null or rdn_termino >= :fecha ) 
+and    (rcd_correlativo is null  
+        or rcd_cnl_codigo = :codigoCanal
+        or :codigoCanal in (select gcd_cnl_codigo
+						  from   grupo_canal_detalle, grupo_version
+						  where  gcd_grp_codigo = gvr_grp_codigo
+                          and    gcd_gvr_correlativo = gvr_correlativo
+                          and    gcd_grp_codigo = rcd_grp_codigo 
+                          and    gvr_inicio     <= :fecha
+                          and    gvr_est_codigo = 'ACTI'
+                          group by  gcd_cnl_codigo, gvr_inicio
+                          having  gvr_inicio = max(gvr_inicio)))) canales,
+(select rdn_codigo as rdn_codigo
+from   regla_negocio
+     left join regla_cliente_detalle on rcld_rdn_codigo = rdn_codigo
+     left join ficha_cliente on fdc_rut = :rutCliente 
+where  rdn_est_codigo = 'ACTI'
+and    rdn_inicio <= :fecha 
+and    (rdn_termino is null or rdn_termino >= :fecha ) 
+and    (rcld_correlativo is null 
+        or rcld_fdc_idcliente = fdc_idcliente
+        or fdc_idcliente in (select gcld_fdc_idcliente
+						  from   grupo_cliente_detalle, grupo_version
+						  where  gcld_grp_codigo = gvr_grp_codigo
+                          and    gcld_gvr_correlativo = gvr_correlativo
+                          and    gcld_grp_codigo = rcld_grp_codigo 
+                          and    gvr_inicio     <= :fecha
+                          and    gvr_est_codigo = 'ACTI'
+                          group by  gcld_fdc_idcliente, gvr_inicio
+                          having  gvr_inicio = max(gvr_inicio)))) clientes,
+regla_negocio_tarifa tarifas, tarifa
+where productos.rdn_codigo = canales.rdn_codigo 
+and productos.rdn_codigo = clientes.rdn_codigo
+and tarifas.rnt_rdn_codigo = productos.rdn_codigo   
+and tarifas.rnt_evento = :evento  
+and tarifa.trf_codigo = tarifas.rnt_trf_codigo 
+and tarifa.trf_prm_tipo = :tipoTarifa 
+]]>
+</sql>
+</Entity>

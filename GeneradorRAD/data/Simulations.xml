@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	tableName="simulations">
+
+  <field property="id"                sqlName="id"         			type="String"  key="true"/>
+  <field property="description"       sqlName="description"    		type="String"/>
+  <field property="userId"       	  sqlName="user_id"    			type="String"/>
+  <field property="timestamp"         sqlName="timestamp"    		type="Timestamp4"/>
+  <field property="idSimulationState" sqlName="id_simulation_state" type="Integer"/>
+  <field property="modelName" 		  sqlName="model_name" 			type="String"/>
+
+  <field property="private"   		  sqlNameRef="private"      type="Join" typeRef="Boolean" joinRef="join1"/>  
+  <field property="simulationState"   sqlNameRef="description"  type="Join" typeRef="String" joinRef="join2"/>
+    
+  <join name="join1" tableName="model">
+      <field sqlName="model_name" sqlNameRef="name" />
+  </join>
+
+  <join name="join2" tableName="simulation_state">
+      <field sqlName="id_simulation_state" sqlNameRef="id" />
+  </join>
+
+  <query id="byId">
+  	 <field property="id"/>
+  </query> 
+
+</Entity>

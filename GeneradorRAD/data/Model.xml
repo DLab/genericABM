@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	tableName="Model">
+
+  <field property="name"            	sqlName="name"        			type="String"  key="true" sort="1"/>
+  <field property="description"     	sqlName="description" 			type="String"/>
+  <field property="activate"       		sqlName="activate"    			type="Boolean"/>
+  <field property="private"        		sqlName="private"    			type="Boolean"/>
+  <field property="singleAgentsList"    sqlName="single_agents_list"    type="Boolean"/>
+  <field property="synchronized"    	sqlName="synchronized"    		type="Boolean"/>
+  <field property="additionalCode"  	sqlName="additional_code"    	type="String"/>
+  <field property="timestamp"       	sqlName="timestamp"    			type="Timestamp4"  />
+  <field property="runWith"      		sqlName="run_with"    			type="String"  />
+  <field property="userId"      		sqlName="user_id"    			type="String"  />
+  <field property="meanSimulationTime" 	sqlName="mean_simulation_time"  type="Double"  />
+  
+  <query id="activate">
+  	 <field property="activate"/>
+  </query>   
+</Entity>

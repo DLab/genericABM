@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	tableName="Graph">
+
+  <field property="modelName"        sqlName="model_name"        	type="String"  key="true" akey="true"/>
+  <field property="name"             sqlName="name"        			type="String"  key="true"/>
+  <field property="graphTypeId"      sqlName="graph_type_id" 		type="Integer"/>
+  <field property="graphTopologyId"  sqlName="graph_topology_id" 	type="Integer"/>
+  <field property="graphAlgorithmId" sqlName="graph_algorithm_id"   type="Integer"/>
+  
+</Entity>
+

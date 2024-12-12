@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	tableName="Agent">
+
+  <field property="modelName"       sqlName="model_name"        	type="String"  key="true" akey="true"/>
+  <field property="name"            sqlName="name"        			type="String"  key="true"/>
+  <field property="base"            sqlName="base"        		    type="Boolean"/>
+  <field property="description"     sqlName="description" 			type="String"/>
+  <field property="graphName"    	sqlName="graph_name"    		type="String"/>
+  <field property="extendsFrom"    	sqlName="extends_from"    		type="String"/>
+  <field property="additionalCode"  sqlName="additional_code"    	type="String"/>
+  
+</Entity>

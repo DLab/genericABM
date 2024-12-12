@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	tableName="GraphType">
+
+  <field property="id"                sqlName="id"         		type="Integer"  key="true"/>
+  <field property="description"       sqlName="description"    	type="String"/>
+  <field property="className"         sqlName="class_name"    	type="String"/>
+  
+</Entity>

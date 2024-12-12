@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	tableName="AgentSites">
+
+  <field property="modelName"       	sqlName="model_name"        				type="String"  key="true" akey="true"/>
+  <field property="agentName"       	sqlName="agent_name"        				type="String"  key="true" akey="true"/>
+  <field property="name"            	sqlName="name"        						type="String"  key="true"/>
+  <field property="aliasName"       	sqlName="alias_name"        				type="String"  />
+  <field property="initialValue"    	sqlName="initial_value" 					type="String"/>
+  <field property="rangeValues"    		sqlName="ranges_values" 					type="Boolean"/>
+  <field property="generalAnalysisId"   sqlName="general_analysis_type_id" 			type="String"/>
+  <field property="detailedAnalysis"   	sqlName="detailed_analysis" 				type="Boolean"/>  
+  <field property="tableId"  			sqlName="table_id"    						type="Integer"/>
+  <field property="variableTypeId"  	sqlName="variable_type_id"    				type="Integer"/>
+  <field property="memoryTypeId"  		sqlName="memory_type_id"    				type="Integer"/>
+  <field property="functionTypeId"  	sqlName="function_type_id"    				type="Integer"/>
+  <field property="modelNameRef"  		sqlName="model_name_ref"    				type="String"/>
+  
+</Entity>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	sqlName="ConsultaTarifaVersion">
+
+  <field property="correlativo"		      type="Integer"/>
+
+  <query id="consulta">
+  	 <field property="fecha" 		      type="Timestamp"/>
+  	 <field property="codigoTarifa"     type="String"/>
+  </query> 
+  
+  <sql>
+  <![CDATA[select tvr_correlativo
+            from tarifa_version
+            where tvr_trf_codigo = :codigoTarifa
+              and tvr_est_codigo = 'ACTI'
+              and tvr_inicio <= :fecha
+            group by tvr_correlativo, tvr_inicio
+            having tvr_inicio = max(tvr_inicio)
+]]>
+</sql>
+</Entity>

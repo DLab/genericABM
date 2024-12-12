@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	tableName="tarifa_version">
+
+  <field property="codigo"              sqlName="tvr_trf_codigo"            type="String"  	key="true"/>   
+  <field property="correlativo"        	sqlName="tvr_correlativo"         	type="Integer"  key="true"/>
+  <field property="codigoEstado"        sqlName="tvr_est_codigo"         	type="String"  />
+  <field property="inicio"        		sqlName="tvr_inicio"         		type="Timestamp"  />
+
+</Entity>

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	tableName="condicion">
+
+  <field property="codigo"                sqlName="cnd_codigo"          type="String"  key="true"/>
+  <field property="codigoModulo"          sqlName="cnd_codmodulo"       type="String"  />
+  <field property="codigoCliente"         sqlName="cnd_codcliente"      type="String"  />
+  <field property="codigoEstado"          sqlName="cnd_est_codigo"      type="String"  />
+  <field property="descripcion"           sqlName="cnd_descripcion"     type="String"/>
+  <field property="comentario"            sqlName="cnd_comentario"      type="String"/>
+  <field property="codigoTipoDato"        sqlName="cnd_tdd_codigo"      type="Character"/>
+  <field property="codigoTabla"      	  sqlName="cnd_prm_codtabla"    type="Integer"/>
+  <field property="usuario"               sqlName="cnd_usuario"         type="String"/>
+  <field property="timestamp"             sqlName="cnd_timestamp"       type="Timestamp"/>
+  <field property="expCompuesta"          sqlName="cnd_expcompuesta"    type="String"/>
+  <field property="codigoTipo"      	  sqlName="cnd_prm_tipo"        type="Integer"/>
+  <field property="origen"             	  sqlName="cnd_origen"      	type="String"/>
+  <field property="codigoTipoOrigen"      sqlName="cnd_prm_tipoorigen"  type="Integer"/>
+  <field property="expresadoEn"           sqlName="cnd_prm_expresadoen" type="Integer"/>
+  <field property="valorPorDefecto"    	  sqlName="cnd_valordefecto"  	type="String"/>
+  
+  <field property="estado"                sqlNameRef="est_descripcion"  type="Join" typeRef="String" joinRef="join1"/>
+  <field property="tipoDato"              sqlNameRef="tdd_descripcion"  type="Join" typeRef="String" joinRef="join2"/>
+  <field property="tipoOrigen"            sqlNameRef="prm_descripcion"  type="Join" typeRef="String" joinRef="join3"/>
+  
+  <join name="join1" tableName="estado">
+      <field sqlName="cnd_est_codigo" sqlNameRef="est_codigo" />
+  </join>
+  <join name="join2" tableName="tipo_dato">
+      <field sqlName="cnd_tdd_codigo" sqlNameRef="tdd_codigo" />
+  </join>
+  <join name="join3" tableName="parametro">
+      <field sqlName="cnd_prm_tipoorigen" sqlNameRef="prm_id" />
+  </join>
+  
+  <query id="activos">
+  	 <field property="codigoEstado"/>
+  </query> 
+  
+</Entity>

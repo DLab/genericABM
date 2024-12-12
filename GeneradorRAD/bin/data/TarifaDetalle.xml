@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	tableName="tarifa_detalle">
+
+  <field property="codigo"      	sqlName="trd_trf_codigo"        type="String"  	key="true" akey="true"/>   
+  <field property="correlativo" 	sqlName="trd_tvr_correlativo"   type="Integer"  key="true" akey="true"/>
+  <field property="fila"        	sqlName="trd_fila"         		type="Integer"  key="true" />
+  <field property="valor"       	sqlName="trd_valor"         	type="Double"  />
+  
+  <field property="idExpValor"      sqlName="trd_prm_expvalor"      type="Integer"  />
+  <field property="idBaseCalculo"   sqlName="trd_prm_basecalculo"   type="Integer"  />
+  <field property="idExpMinMax"     sqlName="trd_prm_expminmax"     type="Integer"  />
+  <field property="idFormaCalculo"  sqlName="trd_prm_forma_calculo" type="Integer"  />
+  <field property="idIndAplicacion" sqlName="trd_prm_indaplicacion" type="Integer"  />
+  <field property="calculoMaximo"   sqlName="trd_calculominimo"     type="Double"  />
+  <field property="calculoMinimo"   sqlName="trd_calculomaximo"     type="Double"  />
+
+</Entity>

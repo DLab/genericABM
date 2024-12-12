@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	tableName="grupo">
+
+  <field property="codigo"                sqlName="grp_codigo"         		type="String"  key="true"/>
+  <field property="codigoTipo"            sqlName="grp_tipo"   		        type="String"/>
+  <field property="descripcion"      	  sqlName="grp_descripcion"    	    type="String"/>
+  
+</Entity>

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	tableName="Rule">
+
+  <field property="modelName"       		sqlName="model_name"        	type="String"  key="true" akey="true"/>
+  <field property="name"            		sqlName="name"        			type="String"  key="true"/>
+  <field property="position"     			sqlName="position" 				type="Integer"/>
+  <field property="description"     		sqlName="description" 			type="String"/>
+  <field property="iterate" 				sqlName="iterate" 				type="String"/>
+  <field property="meet" 					sqlName="meet" 					type="String"/>
+  <field property="trueActionName"  		sqlName="true_action_name"    	type="String"/>
+  <field property="falseActionName" 		sqlName="false_action_name"    	type="String"/>
+  <field property="beforeActionName"  		sqlName="before_action_name"    type="String"/>
+  <field property="afterActionName"  		sqlName="after_action_name"    	type="String"/>
+  <field property="conditionalCode" 		sqlName="conditional_code"    	type="String"/>
+  
+</Entity>

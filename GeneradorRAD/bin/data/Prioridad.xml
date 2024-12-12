@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	tableName="prioridad">
+
+  <field property="codigo"          sqlName="pri_codigo"            type="String"  	key="true"/>   
+  <field property="idTipo"        	sqlName="pri_prm_tipo"      	type="Integer"  />
+  <field property="idSubTipo"     	sqlName="pri_prm_subtipo"   	type="Integer"  />
+  <field property="idEvento"     	sqlName="pri_prm_evento"   		type="Integer"  />
+  <field property="expProducto"     sqlName="pri_expproducto"       type="String"	/>
+  <field property="expCanal"     	sqlName="pri_expcanal"          type="String"	/>
+  <field property="descripcion"     sqlName="pri_descripcion"       type="String"	/>               
+  <field property="comentarios"     sqlName="pri_comentario"        type="String"	/>            
+  <field property="usuario"         sqlName="pri_usuario"  			type="String"	/>                 
+  <field property="timestamp"       sqlName="pri_timestamp"         type="Timestamp"/>  
+
+</Entity>

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	tableName="simulation_details">
+
+  <field property="idSimulation"      sqlName="id_simulation"       type="String"  key="true" akey="true"/>
+  <field property="id"                sqlName="id"         			type="Integer"  key="true" akey="true"/>
+  <field property="content" 		  sqlName="content" 			type="Object"/>
+  <field property="additionalData"    sqlName="additional_data" 	type="Object"/>
+
+</Entity>

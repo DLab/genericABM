@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	tableName="tipotarifa_eje">
+
+  <field property="idTipoTarifa"    sqlName="tte_prm_idtipotarifa"  type="Integer"  key="true" akey="true"/>
+  <field property="idEje"           sqlName="tte_prm_ideje"    		type="Integer"  key="true"/>
+  <field property="usuario"         sqlName="tte_usuario"        	type="String"/>
+  <field property="timestamp"       sqlName="tte_timestamp"        	type="Timestamp"/>
+  <field property="idExpresion"     sqlName="tte_prm_idexpresion"   type="Integer"/>
+  <field property="idBase"          sqlName="tte_prm_idbase"        type="Integer"/>
+  <field property="decimales"       sqlName="tte_decimales"         type="Integer"/>
+  
+  <field property="tipoTarifa"      sqlNameRef="prm_descripcion"  	type="Join" typeRef="String" joinRef="join1"/>
+  <field property="eje"      		sqlNameRef="prm_descripcion"  	type="Join" typeRef="String" joinRef="join2"/>
+  
+  <join name="join1" tableName="parametro">
+      <field sqlName="tte_prm_idtipotarifa" sqlNameRef="prm_id" />
+  </join>
+  <join name="join2" tableName="parametro">
+      <field sqlName="tte_prm_ideje" sqlNameRef="prm_id" />
+  </join>
+  
+</Entity>

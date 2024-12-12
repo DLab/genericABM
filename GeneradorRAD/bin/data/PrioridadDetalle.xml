@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Entity xmlns="http://www.example.org/Entity" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+	xsi:schemaLocation="http://www.example.org/Entity Entity.xsd "
+	tableName="prioridad_detalle">
+
+  <field property="codigoPrioridad"       sqlName="prid_pri_codigo"         	 type="String"  key="true" akey="true"/>
+  <field property="codigoCondicion"       sqlName="prid_cnd_codigo"  	 		 type="String"  key="true"/>
+  <field property="correlativo"           sqlName="prid_pdvr_correlativo"    	 type="Integer" key="true" akey="true"/>
+  <field property="peso"             	  sqlName="prid_peso"  	 				 type="Double"/>
+  
+</Entity>
