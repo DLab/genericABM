@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.log4j.Logger;
 
+import cl.dlab.abm.core.kqml.KqmlIntegration;
 import cl.dlab.abm.core.model.gen.JarService;
 import cl.dlab.abm.core.simulation.TaskManager;
 import cl.dlab.util.PropertyUtil;
@@ -63,7 +64,7 @@ public class InitializeServlet extends HttpServlet
 			if (PropertyUtil.getProperty("DELETE-ALL-ACTIVE-PROCESS").equals("true"))
 			{
 				System.out.println("Borrar todos los procesos activos");
-				TaskManager.deleteAllActiveProcess();
+				//TaskManager.deleteAllActiveProcess();
 			}
 		}
 		catch(Exception e)
@@ -117,6 +118,20 @@ public class InitializeServlet extends HttpServlet
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
 	{
+	}
+	@Override
+	public void destroy()
+	{
+		System.out.println("Destroy...");
+		try
+		{
+			KqmlIntegration.getInstance().quit();
+		} 
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
+		super.destroy();
 	}
 	
 }

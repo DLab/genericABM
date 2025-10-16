@@ -3,6 +3,8 @@ package cl.dlab.abm.util;
 import java.io.BufferedWriter;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.OutputStreamWriter;
@@ -27,6 +29,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import cl.dlab.abm.core.parser.Util;
 import cl.dlab.abm.core.sql.rad.Simulations;
+import cl.dlab.abm.servlet.InitializeServlet;
 
 public class ReportesUtil {
 	
@@ -313,34 +316,42 @@ public class ReportesUtil {
 		
 	}
 	@SuppressWarnings("unchecked")
-	private byte[] getAdditionalData(HashMap<String, Object> input, String title, HashMap<String, Object> modelDefinition) throws Exception
+	private HashMap<String, byte[]> getDetailsData(HashMap<String, Object> input, String title, HashMap<String, Object> modelDefinition) throws Exception
 	{
 		ByteArrayOutputStream bo = new ByteArrayOutputStream();
 		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(bo));
 
 		Simulations service = new Simulations(null, false);
+		HashMap<String, byte[]> detailsData = new HashMap<String, byte[]>();
 		try
 		{
-			try(PreparedStatement stmt = service.getConnection().prepareStatement("select additional_data from simulation_details where id_simulation = ?"))
+			try(PreparedStatement stmt = service.getConnection().prepareStatement("select additional_data, content from simulation_details where id_simulation = ?"))
 			{
 				System.out.println("id:" + input.get("id"));
 				stmt.setString(1, (String)input.get("id"));
 				try(ResultSet rset = stmt.executeQuery())
 				{
-					ArrayList<HashMap<String, Object>> result = new ArrayList<HashMap<String,Object>>();
+					ArrayList<HashMap<String, Object>> additionalData = new ArrayList<HashMap<String,Object>>();
+					ArrayList<HashMap<String, Object>> content = new ArrayList<HashMap<String,Object>>();
 					while(rset.next())
 					{
 						byte[] bytes = (byte[])rset.getObject(1);
 						try(ObjectInputStream oi = new ObjectInputStream(new ByteArrayInputStream(bytes)))
 				        {
-							result.add((HashMap<String,Object>)BytesUtil.getObjectByZipBytes((byte[])oi.readObject()));
+							additionalData.add((HashMap<String,Object>)BytesUtil.getObjectByZipBytes((byte[])oi.readObject()));
 				        }
 						
+						bytes = (byte[])rset.getObject(2);
+						try(ObjectInputStream oi = new ObjectInputStream(new ByteArrayInputStream(bytes)))
+				        {
+							content.add((HashMap<String,Object>)BytesUtil.getObjectByZipBytes((byte[])oi.readObject()));
+				        }
+
 					}
-					HashMap<String, Object> resultsFields = writeHeaderAdditionalData(bw, result.get(0), modelDefinition, title);
+					HashMap<String, Object> resultsFields = writeHeaderAdditionalData(bw, additionalData.get(0), modelDefinition, title);
 					ArrayList<HashMap<String, Object>> properties = (ArrayList<HashMap<String,Object>>)resultsFields.get("properties");
 					HashMap<String, Object> zAxis = (HashMap<String, Object>)resultsFields.get("zAxis");
-					for (HashMap<String, Object> hs : result)
+					for (HashMap<String, Object> hs : additionalData)
 					{
 						double[] zAxisValues = (double[])hs.get((String)zAxis.get("name"));
 						for (int i = 0; i < zAxisValues.length; i++)
@@ -360,6 +371,58 @@ public class ReportesUtil {
 							
 						}
 					}
+					bw.close();
+					detailsData.put("additionalData", bo.toByteArray());
+					HashMap<String, Object> values = content.get(0);
+					HashMap<String, Object> median = (HashMap<String, Object>)values.get("median");
+					ArrayList<String> names = new ArrayList<String>(median.keySet());
+					File file = new File(InitializeServlet.REAL_PATH + "/sim/sim_" + input.get("id") + ".csv");
+					bw = new BufferedWriter(new FileWriter(file));
+					String sep = ";";
+					bw.write("comb;paso");
+					System.out.println("**" + names);
+					for (String name : names)
+					{
+						bw.write(sep);
+						bw.write(name + "-median");
+						bw.write(sep);
+						bw.write(name + "-mean");
+						bw.write(sep);
+						bw.write(name + "-stdDev");						
+					}
+					int n = 0;
+					bw.newLine();
+					
+					for (HashMap<String, Object> item : content)
+					{
+						median = (HashMap<String, Object>)item.get("median");
+						HashMap<String, Object> mean = (HashMap<String, Object>)item.get("mean");
+						HashMap<String, Object> stdDev = (HashMap<String, Object>)item.get("stdDev");
+						sep = "";
+						++n;
+						double[] medians = (double[])median.get(names.get(0));
+						for (int i = 0; i < medians.length; i++)
+						{
+							bw.write(n + ";");
+							bw.write(i + ";");
+							for (String name : names)
+							{
+								medians = (double[])median.get(name);
+								double[] means = (double[])mean.get(name);
+								double[] stdDevs = (double[])stdDev.get(name);
+								bw.write("" + medians[i]);
+								bw.write(";");
+								bw.write("" + means[i]);
+								bw.write(";");
+								bw.write("" + stdDevs[i]);								
+							}
+							bw.newLine();
+							bw.flush();
+						}
+						
+					}
+					bw.close();
+					//detailsData.put("all", bo.toByteArray());
 				}
 			}
 		}
@@ -367,7 +430,7 @@ public class ReportesUtil {
 		{
 			service.getConnection().close();
 		}
-		return bo.toByteArray();
+		return detailsData;
 	}
 	@SuppressWarnings("unchecked")
 	public HashMap<String, Object> downloadSimulation(HashMap<String, Object> input) throws Exception
@@ -400,11 +463,17 @@ public class ReportesUtil {
 			zo.write(excelFile);
 			zo.closeEntry();
 			
+			HashMap<String, byte[]> detailData = getDetailsData(input, title, model);
 			if (!detail)
 			{
 				zo.putNextEntry(new ZipEntry(title + "_detail.csv"));
-				zo.write(getAdditionalData(input, title, model));
+				zo.write(detailData.get("additionalData"));
 				zo.closeEntry();			
+
+				/*zo.putNextEntry(new ZipEntry(title + "_all_data.csv"));
+				zo.write(detailData.get("all"));
+				zo.closeEntry();*/			
+			
 			}
 			
 			zo.close();

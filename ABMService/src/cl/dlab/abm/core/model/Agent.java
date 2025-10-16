@@ -1,6 +1,15 @@
 package cl.dlab.abm.core.model;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+
+import org.json.JSONObject;
+
+import cl.dlab.abm.core.kqml.KQMLMessage;
+import cl.dlab.abm.core.kqml.KqmlIntegration;
+import cl.dlab.abm.core.kqml.KqmlItem;
+import cl.dlab.abm.core.kqml.MessageType;
+import cl.dlab.abm.util.Utils;
 
 public class Agent implements Cloneable
 {
@@ -10,6 +19,8 @@ public class Agent implements Cloneable
 	private org.jgrapht.Graph<Integer, Agent> graph;
 	public boolean removed = false;
 	public boolean incubating = false;
+	public double rnd;
+	public String[] kqmlProperties;
 	/**
 	 * @return the name
 	 */
@@ -123,5 +134,46 @@ public class Agent implements Cloneable
 			this.incubating = true;
 		}
 		model.newAgents = newAgents;
+	}
+	private JSONObject getProperties() throws Exception
+	{
+		JSONObject obj = new JSONObject();
+		Field[] fields = this.getClass().getDeclaredFields();
+		for (Field field : fields)
+		{
+			obj.put(field.getName(), field.get(this));
+		}
+		
+		return obj;
+	}
+	private void setProperties(JSONObject properties) throws Exception
+	{
+		Utils.setProperties(properties, this);		
+	}
+	public KQMLMessage receiveMessage(Model model, KQMLMessage msg) throws Exception
+	{
+		//System.out.println(model.getName() + "**" + model.getIdProcess() + "**" + model.getNumCombination() + "**" + model.getNumSimulation() + "**" + model.getNumStep() );
+		if (model.isKqmlIntegration())
+		{
+			KqmlIntegration.getInstance().addItem(new KqmlItem(model, msg.getSender(), msg.getReceiver()));
+		}
+		if (msg.getPerformative() == MessageType.Ask) 
+		{
+			if (msg.getMessage().equals("give-me-your-properties"))
+			{
+				return new KQMLMessage(MessageType.Tell
+						, msg.getReceiver()
+						, msg.getSender()
+						, getProperties()
+						, "JSON"
+						, msg.getOntology());
+			}
+		}
+		else if (msg.getPerformative() == MessageType.Update) 
+		{
+			setProperties(msg.getContent());
+			return null;
+		}
+		return null;
 	}
 }

@@ -1,13 +1,17 @@
 package cl.dlab.abm.util;
 
 import java.io.BufferedReader;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 import org.json.JSONObject;
@@ -125,17 +129,19 @@ public class Utils
 		}
 		
 	}
-	
 	public static StringBuilder readURL(URLConnection con) throws Exception
 	{
-		BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
-		String line = null;
-		StringBuilder buff = new StringBuilder();
-		while((line = br.readLine()) != null)
+		try(InputStream is = con.getInputStream())
 		{
-			buff.append(line);
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			String line = null;
+			StringBuilder buff = new StringBuilder();
+			while((line = br.readLine()) != null)
+			{
+				buff.append(line);
+			}
+			return buff;
 		}
-		return buff;
 	}
 	
 	public static String sendPostData(String url, Param... params) throws Exception
@@ -155,30 +161,60 @@ public class Utils
 	}
 	public static String sendData(String url, String tipo, Param... params) throws Exception
 	{
-		System.out.println(url);
 		HttpURLConnection con = (HttpURLConnection)new URL(url).openConnection();
-		con.setRequestMethod(tipo);
-		if (tipo.equals("POST"))
+		try
 		{
-			con.setDoOutput(true);
-			con.setRequestProperty("Content-Type", "application/json");
-			con.setRequestProperty("Accept", "application/json");
-		}
-		if (params != null && params.length > 0)
-		{
-			try(OutputStream os = con.getOutputStream()) {
-				JSONObject obj = new JSONObject();
-				for (Param param : params) {
-					obj.put(param.getKey(), param.getValue());
+			con.setRequestMethod(tipo);
+			if (tipo.equals("POST"))
+			{
+				con.setDoOutput(true);
+				con.setRequestProperty("Content-Type", "application/json");
+				con.setRequestProperty("Accept", "application/json");
+			}
+			if (params != null && params.length > 0)
+			{
+				try(OutputStream os = con.getOutputStream()) {
+					JSONObject obj = new JSONObject();
+					for (Param param : params) {
+						obj.put(param.getKey(), param.getValue());
+					}
+				    byte[] output = obj.toString().getBytes("utf-8");
+				    os.write(output, 0, output.length);			
+					
+					//obj.write(new OutputStreamWriter(os, "UTF-8"));			
 				}
-			    byte[] output = obj.toString().getBytes("utf-8");
-			    os.write(output, 0, output.length);			
-				
-				//obj.write(new OutputStreamWriter(os, "UTF-8"));			
+			}
+			return readURL(con).toString();
+		}
+		finally
+		{
+			con.disconnect();
+		}
+	}	
+	public static void setProperties(JSONObject properties, Object obj) throws Exception
+	{
+		Field[] fields = obj.getClass().getDeclaredFields();
+		for (Field field : fields)
+		{
+			if (properties.has(field.getName()))
+			{
+				field.set(obj, properties.get(field.getName()));
 			}
 		}
-		return readURL(con).toString();
 		
-	}	
+	}
+	public static void getProperties(JSONObject properties, Object obj, String[] propertyNames) throws Exception
+	{
+		ArrayList<String> list = new ArrayList<String>(Arrays.asList(propertyNames));
+		Field[] fields = obj.getClass().getDeclaredFields();
+		for (Field field : fields)
+		{
+			if (list.contains(field.getName()))
+			{
+				properties.put(field.getName(), field.get(obj));
+			}
+		}
+		
+	}
 	
 }

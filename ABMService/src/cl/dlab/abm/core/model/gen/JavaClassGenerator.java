@@ -14,6 +14,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -49,7 +51,7 @@ public class JavaClassGenerator
 	private static final String MODEL = "Model";
 
 	private static final String PRIVATE = "private ";
-	private static final String PROTECTED = "protected ";
+	//private static final String PROTECTED = "protected ";
 	private static final String PUBLIC = "public ";
 	
 	private static final String IF = "If";
@@ -154,7 +156,7 @@ public class JavaClassGenerator
 	{
 		StringBuilder properies = new StringBuilder();
 		StringBuilder methods = new StringBuilder();
-		String visibility = getterAndSetter ? PRIVATE : PROTECTED;
+		String visibility = getterAndSetter ? PRIVATE : PUBLIC;
 		for (HashMap<String, Object> prop : properties)
 		{
 			String type;
@@ -194,7 +196,7 @@ public class JavaClassGenerator
 		}
 		return new String[] {properies.toString(), methods.toString()};
 	}
-	public StringBuilder getFunctions(JavaLatextParser parser, HashMap<String, Object> alias, JSONArray functions, ObjectName objectName, boolean getterAndSetter) throws Exception
+	public StringBuilder getFunctions(JavaLatextParser parser, HashMap<String, Object> alias, JSONArray functions, ObjectName objectName, boolean getterAndSetter, boolean kqmlIntegration) throws Exception
 	{
 		StringBuilder buff = new StringBuilder();
 		for (int i = 0; i < functions.length(); i++)
@@ -217,14 +219,22 @@ public class JavaClassGenerator
 				buff.append("return ");
 			}
 			System.out.println("ALIAS" + fn.get(CODE));
-			buff.append(getActionCode(parser, new JSONArray(fn.getString(CODE)), getterAndSetter)).append("}");
+			buff.append(getActionCode(parser, new JSONArray(fn.getString(CODE)), getterAndSetter, kqmlIntegration)).append("}");
 		}
 		return buff;
 	}
 	@SuppressWarnings("rawtypes")
-	private StringBuilder getActionCode(JavaLatextParser parser, JSONArray jarray, boolean getterAndSetter) throws Exception
+	private StringBuilder getActionCode(JavaLatextParser parser, JSONArray jarray, boolean getterAndSetter, boolean kqmlIntegration) throws Exception
 	{
 		StringBuilder code = new StringBuilder();
+		if (kqmlIntegration)
+		{
+			code.append("\ncl.dlab.abm.core.kqml.KQMLMessage msgi = agenti.receiveMessage(model, new cl.dlab.abm.core.kqml.KQMLMessage(cl.dlab.abm.core.kqml.MessageType.Ask, agenti.getName(), agenti.getName(), \"give-me-your-properties\", \"KIF\", model.getName()));\n");
+			code.append("\ncl.dlab.abm.core.kqml.KQMLMessage msgj = agentj.receiveMessage(model, new cl.dlab.abm.core.kqml.KQMLMessage(cl.dlab.abm.core.kqml.MessageType.Ask, agenti.getName(), agentj.getName(), \"give-me-your-properties\", \"KIF\", model.getName()));\n");
+			code.append("\norg.json.JSONObject tgannt = model.sendDataTgatnn(agenti, agentj);\n");
+			code.append("if (model.getNumStep() <= tgannt.getInt(\"tx\")) {");
+			
+		}
 		for (Iterator iterator = jarray.iterator(); iterator.hasNext();)
 		{
 			JSONObject json = (JSONObject) iterator.next();
@@ -244,6 +254,10 @@ public class JavaClassGenerator
 			else
 			{
 				String src = parser.parser(true, type.equals(IF), getterAndSetter, json.getString(CODE));
+				if (kqmlIntegration)
+				{
+					src = transform(src);	
+				}
 				if (type.equals(ACTION))
 				{
 					code.append(src);
@@ -271,10 +285,60 @@ public class JavaClassGenerator
 				}
 			}
 		}
-		System.out.println(code);
+		if (kqmlIntegration)
+		{
+			code.append("\nagenti.receiveMessage(model, new cl.dlab.abm.core.kqml.KQMLMessage(cl.dlab.abm.core.kqml.MessageType.Update, agenti.getName(), agenti.getName(), msgi.getContent(), \"JSON\", model.getName()));\n");
+			code.append("\nagentj.receiveMessage(model, new cl.dlab.abm.core.kqml.KQMLMessage(cl.dlab.abm.core.kqml.MessageType.Update, agentj.getName(), agentj.getName(), msgj.getContent(), \"JSON\", model.getName()));\n");
+			code.append("}else{model.updateDataTgatnn(agenti, agentj, tgannt);}");
+			code.append("\nmodel.sendDataTgatnn(agenti, agentj);\n");
+		}
+		
+		//System.out.println(code);
 		return code;
 		
 	}
+	public static String transform(String input) {
+        // 1. Verifica si es una asignación del tipo ((Agent) agentX).field = ...
+        Pattern assignPattern = Pattern.compile("^\\s*\\(\\(Agent\\)\\s*(agent\\w+)\\)\\.(\\w+)\\s*=\\s*(.+)");
+        Matcher assignMatcher = assignPattern.matcher(input);
+
+        if (assignMatcher.find()) {
+            String lhsAgent = assignMatcher.group(1);  // Ej: agenti
+            String lhsField = assignMatcher.group(2);  // Ej: rho
+            String rhs = assignMatcher.group(3);       // Expresión derecha
+
+            String transformedRhs = transformAgentFields(rhs, lhsAgent);
+            String msgVar = lhsAgent.replaceFirst("agent", "msg");
+
+            return msgVar + ".set(\"" + lhsField + "\", " + transformedRhs + ")";
+        } else {
+            // Si no es asignación de ((Agent)...), solo reemplazar ocurrencias del patrón
+            return transformAgentFields(input, null);
+        }
+    }
+
+    private static String transformAgentFields(String input, String lhsAgent) {
+        Pattern fieldPattern = Pattern.compile("\\(\\(Agent\\)\\s*(agent\\w+)\\)\\.(\\w+)");
+        Matcher matcher = fieldPattern.matcher(input);
+
+        StringBuffer sb = new StringBuffer();
+        while (matcher.find()) {
+            String agent = matcher.group(1);  // Ej: agenti, agentj
+            String field = matcher.group(2);  // Ej: rt, conf, repu
+
+            String replacement;
+            if (lhsAgent != null && agent.equals(lhsAgent)) {
+                replacement = "msgi.get(\"" + field + "\")";
+            } else {
+                String msgVar = agent.replaceFirst("agent", "msg");
+                replacement = msgVar + ".get(\"" + field + "\")";
+            }
+
+            matcher.appendReplacement(sb, replacement);
+        }
+        matcher.appendTail(sb);
+        return sb.toString();
+    }
 	private String getModelInitValues(ArrayList<HashMap<String,Object>> modelVariables)
 	{
 		StringBuilder buff = new StringBuilder(" @Override public void setValues(java.util.HashMap<String, Object> values){");
@@ -519,11 +583,30 @@ public class JavaClassGenerator
 	{
 		return o == null ? 0 : o instanceof String ? Integer.parseInt((String)o) : o instanceof Integer ? (Integer)o : ((Number)o).intValue(); 
 	}
+	private StringBuilder addKQMLIntegration(StringBuilder buff, boolean kqmlIntegration, ArrayList<HashMap<String, Object>> properties)
+	{
+		if (kqmlIntegration)
+		{
+			StringBuilder result = new StringBuilder();
+			String sep = "";
+			for (HashMap<String, Object> prop : properties)
+			{
+				if ((Boolean)prop.get("kqmlIntegration"))
+				{
+					result.append(sep).append("\"").append(prop.get("name")).append("\"");
+					sep = ", ";
+				}
+			}
+			buff.append("kqmlProperties= new String[]{").append(result).append("};");
+		}
+		return buff;
+	}
 	@SuppressWarnings({ "unchecked"})
 	public void generateJar(HashMap<String, Object> model) throws Exception
 	{
 		String modelName = Util.getJavaName((String) model.get(NAME));
 		Boolean value = (Boolean)model.get("synchronized");
+		Boolean kqmlIntegration = (Boolean)model.get("kqmlIntegration");
 		boolean getterAndSetter = value != null && value || model.get("runWith") != null;
 		String packageName = getPackageName(modelName);
 		ArrayList<HashMap<String, Object>> agents = (ArrayList<HashMap<String, Object>>) model.get("agents");
@@ -546,6 +629,7 @@ public class JavaClassGenerator
 		alias.put(AGENT, Util.getAlias(AGENT, agentObjectName, -2));
 		alias.put("remove", Util.getAlias("remove", agentObjectName, -1));
 		alias.put("create", Util.getAlias("create", agentObjectName, -1));
+		alias.put("rnd", Util.getAlias("rnd", agentObjectName, 1));
 		ArrayList<HashMap<String,Object>> variablesModel = (ArrayList<HashMap<String,Object>>)model.get("variables");
 		String[] properties = getProperties(alias, variablesModel, modelObjectName, getterAndSetter);
 		String initModelValues = getModelInitValues(variablesModel); 
@@ -568,7 +652,7 @@ public class JavaClassGenerator
 				return getInteger(o1.get("position")).compareTo(getInteger(o2.get("position")));
 			}
 		});
-		StringBuilder modelFunctions = getFunctions(parser, alias, functions, modelObjectName, getterAndSetter);
+		StringBuilder modelFunctions = getFunctions(parser, alias, functions, modelObjectName, getterAndSetter, kqmlIntegration);
 		
 		for (HashMap<String, Object> rule : rules)
 		{
@@ -619,9 +703,9 @@ public class JavaClassGenerator
 					+ buff + " return " + javaLatex + ";}}"));
 		}
 		
-		
+		 
 		String newData = "@Override public cl.dlab.abm.core.model.Data newData(int numPasos){return new Data(numPasos);}";
-		StringBuilder constructor = new StringBuilder(" public Model(){").append(rulesBuffer).append("}");
+		StringBuilder constructor = new StringBuilder(" public Model(){").append(addKQMLIntegration(rulesBuffer, kqmlIntegration, variablesModel)).append("}");
 		sources.add(new Source(MODEL, modelObjectName, PACKAGE_ + packageName + SEMICOLON + imports + PUBLIC_CLASS_MODEL + properties[0] + properties[1] 
 						+ constructor + initModelValues + modelProperties + newData + clearValues + cloneMethod));
 		
@@ -637,7 +721,8 @@ public class JavaClassGenerator
 			cloneMethod = getCloneMethod(name, agentSites);
 			String extendsFrom = (String)agent.get("extendsFrom");
 			sources.add(new Source(name, objectName, PACKAGE_ + packageName + SEMICOLON + imports + " public class " + name 
-					+ " extends " + (extendsFrom == null ? "cl.dlab.abm.core.model.Agent" : extendsFrom ) + " implements Cloneable {" + properties[0] + properties[1] + getAgentInitValues(getterAndSetter, agentSites) + cloneMethod));
+					+ " extends " + (extendsFrom == null ? "cl.dlab.abm.core.model.Agent" : extendsFrom ) + " implements Cloneable { public " + name + "(){" + addKQMLIntegration(new StringBuilder(), kqmlIntegration, agentSites) + "}" 
+					+ properties[0] + properties[1] + getAgentInitValues(getterAndSetter, agentSites) + cloneMethod));
 		}
 
 		modelObjectName.setName("this");
@@ -657,7 +742,7 @@ public class JavaClassGenerator
 				JSONArray fn = new JSONArray(code);
 				ObjectName objName = source.objectName;
 				objName.setName(objName.getName().replace(")agent)", _THIS_));
-				source.source = source.source + getFunctions(parser, alias, fn, objName, getterAndSetter) + "}";
+				source.source = source.source + getFunctions(parser, alias, fn, objName, getterAndSetter, kqmlIntegration) + "}";
 				objName.setName(objName.getName().replace(_THIS_, ")agent)"));
 			}
 		}
@@ -670,7 +755,7 @@ public class JavaClassGenerator
 			String name = Util.getJavaName((String) action.get(NAME));
 			String actionCode = (String)action.get(CODE);
 			System.out.println("action::" + alias + "**" + actionCode);
-			StringBuilder code = actionCode == null ? new StringBuilder() : getActionCode(parser, new JSONArray(actionCode), getterAndSetter);
+			StringBuilder code = actionCode == null ? new StringBuilder() : getActionCode(parser, new JSONArray(actionCode), getterAndSetter, kqmlIntegration);
 			StringBuilder execute = new StringBuilder();
 			int idOk = hsActions.get((String) action.get(NAME));
 			if (idOk == 0)
@@ -703,7 +788,7 @@ public class JavaClassGenerator
 			{
 				src.mkdirs();
 			}
-			String classpath = path + "src/:" + InitializeServlet.REAL_PATH + "/WEB-INF/lib/abm.jar";
+			String classpath = path + "src/:" + InitializeServlet.REAL_PATH + "/WEB-INF/lib/abm.jar:" + InitializeServlet.REAL_PATH + "/WEB-INF/lib/json-20160212.jar";
 			System.out.println(classpath);
 			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 			ByteArrayOutputStream err = new ByteArrayOutputStream();

@@ -4,18 +4,29 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import cl.dlab.abm.core.model.function.Function;
+import cl.dlab.abm.util.Param;
+import cl.dlab.abm.util.Utils;
 import cl.dlab.util.PropertyUtil;
 
 public class Model implements Cloneable
 {
 	private static final UmbralGenerationType umbralGenerationType = UmbralGenerationType.valueOf(PropertyUtil.getPropertySinErrores("model.generatesthreshold"));
+	private static final String URL_TGATNN = PropertyUtil.getPropertySinErrores("URL-TGATNN-INTEGRATION");
+	private static final String URL_TGATNN_ONE = PropertyUtil.getPropertySinErrores("URL-TGATNN-ONE-INTEGRATION");
 	
 	private String idProcess;
+	private int numCombination;
+	private int numSimulation;
+	private int numStep;
 	private String name;
 	private String description;
 	private double probMeet;
 	private Model runWith;
+	private boolean kqmlIntegration;
 	private ArrayList<Graph> graphs;
 	private ArrayList<Rule> rules;
 	private ArrayList<Rule> initialRules;
@@ -25,6 +36,7 @@ public class Model implements Cloneable
 	protected int numNoInteractionAgents;
 	public HashMap<String, ArrayList<? extends Agent>> tmpAgents;
 	public ArrayList<Agent> newAgents;
+	public String[] kqmlProperties;
 
 	public Model() 
 	{
@@ -163,6 +175,7 @@ public class Model implements Cloneable
 		for (int i = 0; i < numAgents; i++)
 		{
 			Agent agent = agentClass.getConstructor().newInstance();
+			agent.setId(i);
 			agent.setValues(this);
 			((ArrayList<Agent>)agents).add(agent);
 		}
@@ -245,7 +258,18 @@ public class Model implements Cloneable
 		HashMap<String, Object> hs = new HashMap<String, Object>();
 		//hs.put("numSteps", numSteps);
 		hs.put("probMeet", probMeet);
-		hs.put("numAgents", agents.size());
+		ArrayList<String> keys = new ArrayList<String>(agents.keySet());
+		if (keys.size() == 1)
+		{
+			hs.put("numAgents", agents.get(keys.get(0)).size());
+		}
+		else
+		{
+			for (String key : keys)
+			{
+				hs.put("numAgents_" + key, agents.get(key).size());
+			}
+		}
 		
 		return hs;
 		
@@ -346,4 +370,115 @@ public class Model implements Cloneable
 	{
 		this.numNoInteractionAgents = numNoInteractionAgents;
 	}
+
+	/**
+	 * @return the kqmlIntegration
+	 */
+	public boolean isKqmlIntegration()
+	{
+		return kqmlIntegration;
+	}
+
+	/**
+	 * @param kqmlIntegration the kqmlIntegration to set
+	 */
+	public void setKqmlIntegration(boolean kqmlIntegration)
+	{
+		this.kqmlIntegration = kqmlIntegration;
+	}
+
+	/**
+	 * @return the numSimulation
+	 */
+	public int getNumSimulation()
+	{
+		return numSimulation;
+	}
+
+	/**
+	 * @param numSimulation the numSimulation to set
+	 */
+	public void setNumSimulation(int numSimulation)
+	{
+		this.numSimulation = numSimulation;
+	}
+
+	/**
+	 * @return the numStep
+	 */
+	public int getNumStep()
+	{
+		return numStep;
+	}
+
+	/**
+	 * @param numStep the numStep to set
+	 */
+	public void setNumStep(int numStep)
+	{
+		this.numStep = numStep;
+	}
+
+	/**
+	 * @return the numCombination
+	 */
+	public int getNumCombination()
+	{
+		return numCombination;
+	}
+
+	/**
+	 * @param numCombination the numCombination to set
+	 */
+	public void setNumCombination(int numCombination)
+	{
+		this.numCombination = numCombination;
+	}
+	public void updateDataTgatnn(Agent agent1, Agent agent2, JSONObject tgannt) throws Exception
+	{
+		
+	}
+	public JSONObject sendDataTgatnn(Agent agent1, Agent agent2) throws Exception
+	{
+		JSONObject json = new JSONObject();
+		Utils.getProperties(json, this, kqmlProperties);
+		JSONArray array = new JSONArray();
+		json.put("agents", array);
+		
+		JSONObject oAgent = new JSONObject();
+		Utils.getProperties(oAgent, agent1, agent1.kqmlProperties);
+		array.put(oAgent);
+		
+		oAgent = new JSONObject();
+		Utils.getProperties(oAgent, agent2, agent2.kqmlProperties);
+		array.put(oAgent);
+		
+		long t = System.currentTimeMillis();
+		String response = Utils.sendData(URL_TGATNN_ONE, "POST", new Param("data", json.toString()));
+		System.out.println("Tiempo en integrar tgatnn-one:" + (System.currentTimeMillis() - t));
+		return new JSONObject(response);
+	}
+	
+	public void sendAllDataTgatnn() throws Exception
+	{
+		JSONObject json = new JSONObject();
+		json.put("idProcess", this.getIdProcess());
+		Utils.getProperties(json, this, kqmlProperties);
+		for (String type : agents.keySet())
+		{
+			JSONArray array = new JSONArray();
+			json.put(type, array);
+			ArrayList<? extends Agent> items = agents.get(type);
+			for (Agent agent : items)
+			{
+				JSONObject oAgent = new JSONObject();
+				Utils.getProperties(oAgent, agent, agent.kqmlProperties);
+				array.put(oAgent);
+			}
+		}
+		long t = System.currentTimeMillis();
+		Utils.sendData(URL_TGATNN, "POST", new Param("data", json.toString()));
+		System.out.println("Tiempo en integrar tgatnn:" + (System.currentTimeMillis() - t));
+	}
+
 }

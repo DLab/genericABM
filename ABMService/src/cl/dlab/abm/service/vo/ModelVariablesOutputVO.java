@@ -34,12 +34,12 @@ public class ModelVariablesOutputVO extends VOBase {
 		return get("initialValue");
 	}
 
-	public void setRangesValues(java.lang.Boolean rangesValues) {
-		set("rangesValues", rangesValues);
+	public void setRangeValues(java.lang.Boolean rangeValues) {
+		set("rangeValues", rangeValues);
 	}
 
-	public Boolean getRangesValues() {
-		return get("rangesValues");
+	public Boolean getRangeValues() {
+		return get("rangeValues");
 	}
 
 	public void setGeneralAnalysisId(java.lang.String generalAnalysisId) {
@@ -88,5 +88,13 @@ public class ModelVariablesOutputVO extends VOBase {
 
 	public Integer getFunctionTypeId() {
 		return get("functionTypeId");
+	}
+
+	public void setKqmlIntegration(java.lang.Boolean kqmlIntegration) {
+		set("kqmlIntegration", kqmlIntegration);
+	}
+
+	public Boolean getKqmlIntegration() {
+		return get("kqmlIntegration");
 	}
 }

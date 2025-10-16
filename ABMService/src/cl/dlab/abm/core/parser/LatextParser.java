@@ -255,7 +255,8 @@ public class LatextParser extends Parser
 	}
 	public static void main(String[] args) throws Exception
 	{
-		String exp = "agent_j\\ne\\varnothing\\wedge\\left(masaD_i\\ge umbralHunted\\left(\\right)\\cdot masaInicial_i\\right)";
+		//String exp = "rho_j=\\left(\\tanh \\left(4\\cdot conf_j-x0\\right)+\\tanh \\left(4\\cdot repu_j-x0\\right)\\right)\\cdot 0.125+0.5";
+		String exp = "rho_j=\\left(2+\\ 4+\\ 8\\right)\\cdot 0.125+0.5";
 		//String exp = "agent_j\\ne \\varnothing \\wedge \\left(masaD_i\\ge \\left(1-\\frac{1}{size\\left(\"\\text{Presas}\"\\right)}\\right)\\cdot masaInicial_i\\right)";
 		//String exp = "masaD_j\\ge\\frac{20\\cdot masaInicial_j}{size\\left(\"\\text{Presas}\"\\right)}";
 		//System.out.println(clean(exp, "\\cdot", " *"));
@@ -268,6 +269,11 @@ public class LatextParser extends Parser
 		alias.put("state", Util.getAlias("state", new ObjectName("agent"), 1));
 		alias.put("repu", Util.getAlias("repu", new ObjectName("agent"), 1));
 		alias.put("masaInicial", Util.getAlias("masaInicial", new ObjectName("agent"), 1));
+		alias.put("rnd", Util.getAlias("rnd", new ObjectName("agent"), 1));
+		alias.put("conf", Util.getAlias("conf", new ObjectName("agent"), 1));
+		alias.put("reci", Util.getAlias("reci", new ObjectName("agent"), 1));
+		alias.put("emotion", Util.getAlias("emotion", new ObjectName("agent"), 1));
+		alias.put("rho", Util.getAlias("rho", new ObjectName("agent"), 1));
 		alias.put("masaD", Util.getAlias("masa", new ObjectName("((Depredador)agent)"), 1));
 		alias.put("random", Util.getAlias("random()", new ObjectName("this"), -1));
 		alias.put("newGenerator", Util.getAlias("newGenerator", new ObjectName("model"), -1));

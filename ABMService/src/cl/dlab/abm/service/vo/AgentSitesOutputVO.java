@@ -105,4 +105,12 @@ public class AgentSitesOutputVO extends VOBase {
 	public String getModelNameRef() {
 		return get("modelNameRef");
 	}
+
+	public void setKqmlIntegration(java.lang.Boolean kqmlIntegration) {
+		set("kqmlIntegration", kqmlIntegration);
+	}
+
+	public Boolean getKqmlIntegration() {
+		return get("kqmlIntegration");
+	}
 }

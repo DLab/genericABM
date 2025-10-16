@@ -20,6 +20,7 @@ import cl.dlab.util.PropertyUtil;
 public class SweepSimulation extends TaskManager
 {
 	private static final String[] SWEEP = new String[] {"Start", "Step", "End"};
+	@SuppressWarnings("unused")
 	private static final int MAX_SIZE_SIMULATIONS = PropertyUtil.getIntValueSinErrores("MAX_SIZE_SIMULATIONS");
 	
 	private ArrayList<Model> models;
@@ -113,8 +114,11 @@ public class SweepSimulation extends TaskManager
 		//System.out.println("zname:" + zAxisName);
 		idProcess = (String)params.get("idProcess");
 		ArrayList<HashMap<String, Object>> allValues = new PropertyValueObject(rangesValues).getAllValues();
-		String modelName = Util.getJavaName((String) modelValues.get("name"));
+		String _modelName = (String) modelValues.get("name");
+		String modelName = Util.getJavaName(_modelName);
 		boolean singleAgentList = (Boolean)modelValues.get("singleAgentsList");
+		Boolean value = (Boolean)modelValues.get("kqmlIntegration");
+		boolean kqmlIntegration = value == null ? false : value;
 		HashMap<String, Object> numAgents = (HashMap<String, Object>)params.get("numAgents");
 		Integer numSim = getInteger(params.get("numSim"));
 		Integer numSteps = getInteger(params.get("numSteps"));
@@ -140,15 +144,23 @@ public class SweepSimulation extends TaskManager
 		long t = System.currentTimeMillis();
 		double totalAgents = 0;
 		int n = 0;
+		System.out.println("kqmlIntegration:" + kqmlIntegration);
 		for (HashMap<String, Object> values : allValues)
 		{
 			Model model = modelClass.getConstructor().newInstance();
 			model.setIdProcess(idProcess);
 			model.setProbMeet(probMeet);
+			model.setName(_modelName);
 			model.setValues(values);
+			model.setKqmlIntegration(kqmlIntegration);
 			for (String name : numAgents.keySet())
 			{
-				totalAgents += n = getInteger(numAgents.get(name));
+				n = getInteger(numAgents.get(name));
+				if (n % 2 == 1)
+				{
+					n++;
+				}
+				totalAgents += n;
 				model.population(n, name, agentClass.get(name));				
 			}
 			if (singleAgentList)
@@ -163,13 +175,14 @@ public class SweepSimulation extends TaskManager
 			}
 			//System.out.println("init:" + model.getAgents("AGENTS").size() + "**" + model.getAgents("Depredador").size() + "**" + model.getAgents("Presa").size());
 			models.add(model);
+			model.setNumCombination(models.size());
 		}
 		if (totalAgents == 0)
 		{
 			totalAgents = models.size();
 		}
-		System.out.println("Total de combinaciones generadas:" + allValues.size() + ", numsim:" + numSim + ", numAgents:" + n);
-		long total = allValues.size() * numSim * n;
+		System.out.println("Total de combinaciones generadas..:" + allValues.size() + ", numsim:" + numSim + ", numAgents:" + n);
+		//long total = allValues.size() * numSim * n;
 		boolean distribute = false;//total > MAX_SIZE_SIMULATIONS;
 		if (distribute)
 		{
@@ -208,58 +221,66 @@ public class SweepSimulation extends TaskManager
 			numMaxThread = 1;
 		}
 		this.numActiveThread = 0;
-		for (Model model : models)
+		try 
 		{
-			boolean activeProcess = true;
-			while(true)
+			for (Model model : models)
 			{
-				if (!(activeProcess = isActiveProcess(idProcess)))
+				boolean activeProcess = true;
+				while(true)
 				{
-					activeProcess = false;
-					break;
-				}
-	
-				if (numActiveThread >= numMaxThread)
-				{
-					synchronized (this.resultUtil)
+					if (!(activeProcess = isActiveProcess(idProcess)))
 					{
-						this.resultUtil.wait();
+						activeProcess = false;
+						break;
+					}
+		
+					if (numActiveThread >= numMaxThread)
+					{
+						synchronized (this.resultUtil)
+						{
+							this.resultUtil.wait();
+						}
+					}
+					else
+					{
+						break;
 					}
 				}
-				else
+				if (!activeProcess)
 				{
 					break;
 				}
+				++numActiveThread;
+				//System.out.println("start:" + idProcess + ", " + numActiveThread + "/" + numMaxThread + " of " + models.size());
+				new ThreadController(new MultipleSim(this, model, numSim, numSteps)).start();
 			}
-			if (!activeProcess)
+			if (isCanceledProcess(idProcess))
 			{
-				break;
+				System.out.println("Proceso cancelado:" + idProcess);
+				HashMap<String, Object> hs = new HashMap<String, Object>();
+				hs.put("idProcess", idProcess);
+				hs.put("cancel", true);
+				return hs;
 			}
-			++numActiveThread;
-			//System.out.println("start:" + idProcess + ", " + numActiveThread + "/" + numMaxThread + " of " + models.size());
-			new ThreadController(new MultipleSim(this, model, numSim, numSteps)).start();
+			System.out.println("termina ok, espera terminen tareas");
+			super.waitForEndAllTask();
+			long simulationTime = System.currentTimeMillis() - t;
+			System.out.println("Simula en :" + simulationTime);
+			t = System.currentTimeMillis();
+			try
+			{
+				return getResults(zAxisName, resultUtil.results, numSteps, simulationTime, totalAgents * (double)numSim * (double)numSteps);
+			}
+			finally
+			{
+				saveFileProcess(idProcess);
+				System.out.println("Estadisticas en:" + (System.currentTimeMillis() - t));
+			}
 		}
-		if (isCanceledProcess(idProcess))
-		{
-			System.out.println("Proceso cancelado:" + idProcess);
-			HashMap<String, Object> hs = new HashMap<String, Object>();
-			hs.put("idProcess", idProcess);
-			hs.put("cancel", true);
-			return hs;
-		}
-		System.out.println("termina ok");
-		super.waitForEndAllTask();
-		long simulationTime = System.currentTimeMillis() - t;
-		System.out.println("Simula en :" + simulationTime);
-		t = System.currentTimeMillis();
-		try
-		{
-			return getResults(zAxisName, resultUtil.results, numSteps, simulationTime, totalAgents * (double)numSim * (double)numSteps);
-		}
-		finally
-		{
-			saveFileProcess(idProcess);
-			System.out.println("Estadisticas en:" + (System.currentTimeMillis() - t));
+		catch (Throwable e) {
+			System.out.println("No debería ocurrir:" + e.getMessage());
+			LogUtil.error(getClass(), e, "No debería ocurrir");
+			return null;
 		}
 	}
 	public static void main(String[] args)
@@ -291,7 +312,7 @@ public class SweepSimulation extends TaskManager
 			updateProcess(idProcess, this.models.size(), this.resultUtil.totalProcessed);
 			if (this.resultUtil.totalProcessed % 100 == 0) 
 			{
-				System.out.println(new Date() + "Terminando comb:" + this.resultUtil.totalProcessed);
+				System.out.println(new Date() + "Terminando comb(v2):" + this.resultUtil.totalProcessed);
 			}
 			synchronized (this.resultUtil)
 			{
@@ -299,7 +320,7 @@ public class SweepSimulation extends TaskManager
 				this.resultUtil.notifyAll();
 			}
 		}
-		catch(Exception e)
+		catch(Throwable e)
 		{
 			LogUtil.error(getClass(), e, "Process error");
 			try

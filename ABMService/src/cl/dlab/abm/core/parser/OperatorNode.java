@@ -60,23 +60,33 @@ public class OperatorNode extends Node
 			}
 			else if (left != null)
 			{
+				String leftOpenParenthesis = "";
+				String leftCloseParenthesis = "";
+				String rightOpenParenthesis = "";
+				String rightCloseParenthesis = "";
 				if (left instanceof ParenthesisNode)
 				{
+					leftOpenParenthesis = "(";
+					leftCloseParenthesis = ")";
 					left = ((ParenthesisNode)left).node;
 				}
 				if (right instanceof ParenthesisNode)
 				{
+					rightOpenParenthesis = "(";
+					rightCloseParenthesis = ")";
 					right = ((ParenthesisNode)right).node;
 				}
 				if (getterAndSetter) 
 				{
-					return ((PropertyNode)left).toJava(condition, getterAndSetter, false) + "(" 
-							+ (right instanceof PropertyNode ? ((PropertyNode)right).toJava(condition, getterAndSetter, true) 
-									: right.toJava(condition, getterAndSetter)) + ")";
+					return leftOpenParenthesis + ((PropertyNode)left).toJava(condition, getterAndSetter, false) + leftCloseParenthesis + "(" 
+							+ rightOpenParenthesis + (right instanceof PropertyNode ? ((PropertyNode)right).toJava(condition, getterAndSetter, true)
+									: right.toJava(condition, getterAndSetter)) + rightCloseParenthesis + ")";
 				}
 				else
 				{
-					return left.toJava(condition, getterAndSetter) + " " + operator + " " + right.toJava(condition, getterAndSetter);
+					return leftOpenParenthesis + left.toJava(condition, getterAndSetter) + leftCloseParenthesis 
+							+ " " + operator + " " 
+							+ rightOpenParenthesis + right.toJava(condition, getterAndSetter) + rightCloseParenthesis;
 				}
 			}
 		}

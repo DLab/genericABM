@@ -31,7 +31,7 @@ public class ThreadController extends Thread
 				try
 				{
 					lock.wait();
-				} catch (InterruptedException e)
+				} catch (Throwable e)
 				{
 					LogUtil.error(getClass(), e, "Error al tratar de hacer wait");
 				}

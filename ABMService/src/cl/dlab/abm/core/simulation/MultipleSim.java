@@ -33,12 +33,14 @@ public class MultipleSim extends TaskManager implements Runnable
 				{
 					return;
 				}
+				model.setNumSimulation(i);
 				new ThreadController(new Sim(this, (Model)model.clone(), this.numSteps)).start();
 			}
 		}
 		catch(Throwable e)
 		{
 			e.printStackTrace();
+			System.out.println("<MultipleSim> Error no controlado:" + e.getMessage());
 			LogUtil.error(getClass(), e, "Error al ejecutar thread");
 			System.exit(0);
 		}

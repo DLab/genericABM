@@ -92,7 +92,7 @@ public abstract class TaskManager
 	}
 	public static void processCanceledSuccessfully(String idProcess) throws Exception
 	{
-		removeActiveProcess(idProcess);
+		removeActiveProcess(idProcess, true);
 	}
 	protected void updateProcess(String idProcess, int numCombinations, int executedCombinations) 
 	{
@@ -158,11 +158,13 @@ public abstract class TaskManager
 			task.init(numCombinations);
 		}
 	}
-	public static void removeActiveProcess(String idProcess) throws Exception
+	public static void removeActiveProcess(String idProcess, boolean know) throws Exception
 	{
 		Connection con = new BaseSQL().newConnection();
 		try
 		{
+			if (!know)
+			throw new RuntimeException("Quien lo remueve");
 			synchronized (ActiveProcess)
 			{
 				PreparedStatement stmt = con.prepareStatement("delete from ActiveProcess where key=?");

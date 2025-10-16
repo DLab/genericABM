@@ -1,8 +1,9 @@
 package cl.dlab.abm.core.simulation;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Random;
+import java.util.concurrent.ThreadLocalRandom;
 
 import cl.dlab.abm.core.model.Agent;
 import cl.dlab.abm.core.model.Data;
@@ -16,14 +17,14 @@ public class Sim implements Runnable
 	private Model model;
 	private int numSteps;
 	private TaskManager taskManager;
-	private Random random;
+	private ThreadLocalRandom random;
 	
 	public Sim(TaskManager taskManager, Model model, int numSteps)
 	{
 		this.model = model;
 		this.numSteps = numSteps;
 		this.taskManager = taskManager;
-		this.random = new Random();
+		this.random = ThreadLocalRandom.current();
 	}
 	private void meet(Rule rule, Agent ag1, Agent ag2) throws Exception
 	{
@@ -62,27 +63,46 @@ public class Sim implements Runnable
 				double probMeet = model.getProbMeet();
 				ArrayList<Agent> agents = new ArrayList<Agent>();
 				ArrayList<? extends Agent> list = model.getAgents(rule.getIterate());
-				for (Agent agent : list)
+				double[] agentsProbability = random.doubles(list.size()).toArray();
+				for (int j = 0; j < list.size(); j++)
 				{
+					Agent agent = list.get(j);
 					if (agent == null || agent.removed || agent.incubating)
 					{
 						continue;
 					}
-					if (random.nextDouble() < probMeet)
+					if (agentsProbability[j] <= probMeet)
 					{
 						agents.add(agent);
 					}
 				}		
+				Collections.shuffle(agents);
 				model.setNumInteractionAgents(agents.size());
 				model.setNumNoInteractionAgents(list.size() - agents.size());
 				rule.getBeforeAction().execute(model);
 				if (rule.getMeet() != null)
 				{
-					for (Agent agent : agents)
+					if (model.getGraphs() == null || model.getGraphs().size() == 0)
 					{
-						meet(rule, agent, rand(neighbors(agent, rule.getMeet())));
+						int n = agents.size() / 2;
+						for (int i = 0; i < n; i++)
+						{
+							int i1 = 2 * i;
+							int i2 = i1 + 1;
+							Agent ag1 = agents.get(i1);
+							Agent ag2 = agents.get(i2);
+							ag1.rnd = agentsProbability[i1];
+							ag2.rnd = agentsProbability[i2];
+							meet(rule, ag1, ag2);
+						}
 					}
-					
+					else
+					{
+						for (Agent agent : agents)
+						{
+							meet(rule, agent, rand(neighbors(agent, rule.getMeet())));
+						}
+					}
 				}
 				else
 				{
@@ -157,6 +177,7 @@ public class Sim implements Runnable
 			}
 			for (int i = 0; i < numSteps; i++)
 			{
+				this.model.setNumStep(i);
 				this.model.clearUmbral(UmbralGenerationType.BY_STEP);
 				this.model.tmpAgents = new HashMap<String, ArrayList<? extends Agent>>();
 				step();
@@ -172,12 +193,17 @@ public class Sim implements Runnable
 						list.addAll(this.model.tmpAgents.get(key));						
 					}
 				}
-				data.addValues(i, model);			
+				data.addValues(i, model);	
+				if (model.isKqmlIntegration())
+				{
+					model.sendAllDataTgatnn();
+				}
 			}
 		}
-		catch(Exception e)
+		catch(Throwable e)
 		{
 			e.printStackTrace();
+			System.out.println("<Sim> Error no controlado:" + e.getMessage());
 			LogUtil.error(Sim.class, e, "Error al realizar step");
 			try
 			{

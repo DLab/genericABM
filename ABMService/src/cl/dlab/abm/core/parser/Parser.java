@@ -55,7 +55,7 @@ public class Parser
 	}
 	private boolean isFunctionNode(String name)
 	{
-		return name.equals("sin") || name.equals("cos") || name.equals("tan") || name.equals("sqrt") 
+		return name.equals("sin") || name.equals("cos") || name.equals("tan") || name.equals("sqrt") || name.equals("tanh") || name.equals("sign")  
 				|| name.equals("normalizer") || name.equals("logistic") || name.equals("sum") || alias.containsKey(name);
 	}
 	@SuppressWarnings("unchecked")
@@ -244,7 +244,7 @@ public class Parser
 						{
 							throw new Exception("Property " + s + " not defined");
 						}
-						else if (c != ',' && c != '"' && exp.charAt(pos + 1) != COMMENT && !isNextWordLogicalOperator())
+						else if (c != ',' && c != '"' && exp.charAt(pos + 1) != COMMENT && !isNextWordLogicalOperator() && !isFunctionNode(s))
 						{
 							exp.insert(pos, '*');
 						}
@@ -254,7 +254,14 @@ public class Parser
 				{
 					return new PropertyNode(s, this);
 				}
-				node = new Node(s, this);
+				if (isFunctionNode(s))
+				{
+					node = getSpecialNode(s);
+				}
+				else
+				{
+					node = new Node(s, this);
+				}
 				if (pos < len)
 				{
 					c = exp.charAt(pos);

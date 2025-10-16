@@ -280,7 +280,7 @@ public class SimulationsService extends BaseService
 		//params.put("lastData", result.get("lastData"));
 		params.put("details", result.get("results"));
 		guardar(params);
-		TaskManager.removeActiveProcess((String)params.get("idProcess"));
+		TaskManager.removeActiveProcess((String)params.get("idProcess"), true);
 		hs.put("numAgents", params.get("numAgents"));
 		hs.put("results", result.get("results"));
 		hs.put("idProcess", params.get("idProcess"));

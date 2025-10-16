@@ -1,5 +1,8 @@
 package cl.dlab.abm.core.simulation;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.ObjectOutputStream;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,6 +11,8 @@ import java.util.HashMap;
 import cl.dlab.abm.core.SimulationDetailsService;
 import cl.dlab.abm.core.model.Data;
 import cl.dlab.abm.core.model.Model;
+import cl.dlab.abm.servlet.InitializeServlet;
+import cl.dlab.util.PropertyUtil;
 
 public class ResultUtil
 {
@@ -52,6 +57,19 @@ public class ResultUtil
 	}
 	public synchronized void meanAndStd(Model model, ArrayList<Data> data) throws Exception
 	{
+		System.out.println("Alldata:" + data.size());
+		if (PropertyUtil.getProperty("save-all-data").equals("true"))
+		{
+			File file = new File(InitializeServlet.REAL_PATH + "/sim/sim_" + idProcess + "_" + totalProcessed + ".out");
+			ObjectOutputStream oo = new ObjectOutputStream(new FileOutputStream(file));
+			ArrayList<HashMap<String, double[]>> propData = new ArrayList<HashMap<String, double[]>>();
+			for (Data d : data)
+			{
+				propData.add(d.getProperties());
+			}
+			oo.writeObject(new Object[] {model.getProperties(), propData});
+			oo.close();
+		}
 		int numStep = data.get(0).getNumPasos();
 		Constructor<? extends Data> constructor = data.get(0).getClass().getConstructor(int.class);
 		int numSim = data.size();

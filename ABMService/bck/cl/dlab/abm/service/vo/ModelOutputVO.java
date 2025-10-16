@@ -51,6 +51,14 @@ public class ModelOutputVO extends VOBase {
 		return get("synchronized");
 	}
 
+	public void setKqmlIntegration(java.lang.Boolean kqmlIntegration) {
+		set("kqmlIntegration", kqmlIntegration);
+	}
+
+	public Boolean getKqmlIntegration() {
+		return get("kqmlIntegration");
+	}
+
 	public void setAdditionalCode(java.lang.String additionalCode) {
 		set("additionalCode", additionalCode);
 	}

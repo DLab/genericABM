@@ -162,6 +162,10 @@ public class FunctionNode extends Node
 			}
 			else 
 			{
+				if (functionName.equals("sign")) 
+				{
+					return "Math.signum" + parameters;
+				}
 				return "Math." + functionName + parameters;
 			}
 		}
