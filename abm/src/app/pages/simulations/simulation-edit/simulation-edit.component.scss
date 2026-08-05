@@ -1,0 +1,47 @@
+app-simulation-edit{
+    .cdk-header-cell, .cdk-cell {
+        text-align: end;
+        width: 30px;
+    }
+    .mat-sort-header-container{
+        display: inline-block;
+        padding-top: 15px;
+    }
+    .long-demo-chart{
+        height: 600px !important;
+        padding-top: 20px;
+        padding-right: 20px;
+    }
+    .options{
+        padding-top: 0px;
+    }
+    .options.header{
+        padding-top: 7px;
+        padding-bottom: 7px;
+    }
+    .person{
+        height: 100%;
+    }
+    .slider-lbl{
+        padding-top: 18px;
+        font-size: large;        
+    }
+    .slider-space{
+        width: 10px;
+    }
+    .mat-dialog-content{
+        max-height: none;
+    }
+    .download-btn{
+        width: 30px;
+        height: 30px;
+    }
+    .download-btn .mat-button-wrapper{
+        display: inherit;
+        margin-left: 1px;
+        padding-top: 3px;
+    }
+    .mat-mini-fab.mat-primary {
+        background-color: #1976d2 !important;
+      }    
+}

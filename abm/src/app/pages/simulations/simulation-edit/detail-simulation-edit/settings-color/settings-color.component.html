@@ -1,0 +1,47 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between center">
+  <div fxFlex="10">{{app.screen.ColorSettings}}</div>
+  <div fxFlex="60"><ng-select [items]="palettes"
+    placeholder="Color Palettes"
+    required
+    [clearable]="false"
+    [(ngModel)]="palette"
+    (change)="changePalette()"
+    ngDefaultControl>
+    </ng-select>
+  </div>
+  <div fxFlex="30" fxLayoutAlign="end center" >
+    <button type="button" mat-icon-button tabindex="-1" [mat-dialog-close]="true">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+</div>
+
+<mat-dialog-content>
+  <div fxLayout="column" fxLayoutGap="8px">
+    <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px" class="options header" >
+
+      <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="0px" *ngFor="let row of firstRow" [style.width]="'20%'">
+        <div class="row" [style.color]="colorCtrs[row.name].value?.rgba">{{row.label}}</div>
+        <mat-form-field>
+          <input matInput [ngxMatColorPicker]="picker" [formControl]="colorCtrs[row.name]" >
+          <ngx-mat-color-toggle matSuffix [for]="picker"></ngx-mat-color-toggle>
+          <ngx-mat-color-picker #picker [touchUi]="touchUi" [color]="color"></ngx-mat-color-picker>
+        </mat-form-field>
+      </div>
+    </div>
+    <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px" class="options header" >
+      <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="0px" *ngFor="let row of secondRow" [style.width]="'20%'">
+        <div class="row" [style.color]="colorCtrs[row.name].value?.rgba">{{row.label}}</div>
+        <mat-form-field>
+          <input matInput [ngxMatColorPicker]="picker" [formControl]="colorCtrs[row.name]" >
+          <ngx-mat-color-toggle matSuffix [for]="picker"></ngx-mat-color-toggle>
+          <ngx-mat-color-picker #picker [touchUi]="touchUi" [color]="color"></ngx-mat-color-picker>
+        </mat-form-field>
+      </div>
+
+    </div>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" >
+  <button  mat-button (click)="accept()" >{{app.screen.Aceptar}}</button>
+</mat-dialog-actions>

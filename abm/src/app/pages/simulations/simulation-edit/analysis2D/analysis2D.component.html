@@ -1,0 +1,103 @@
+<div class="person">
+  <form [formGroup]="analysisForm" >
+
+    <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px" class="options header">
+
+      <mat-form-field fxFlex="20" >
+        <mat-label>{{app.screen.Linearity_analysis}}</mat-label>
+        <input matInput [matAutocomplete]="linearityAnalysisMethod" formControlName="linearityAnalysisMethod" >
+        <mat-autocomplete #linearityAnalysisMethod="matAutocomplete" [displayWith]="linearityAnalysisMethodFilter.displayItem" (optionSelected)="linearityAnalysisChange()">
+          <mat-option *ngFor="let item of linearityAnalysisMethodFilter.filteredItems| async" [value]="item">
+            <span>{{ item.description }}</span>
+          </mat-option>
+        </mat-autocomplete>
+        <button *ngIf="analysisForm.get('linearityAnalysisMethod').value && !analysisForm.get('linearityAnalysisMethod').disabled" type="button" mat-icon-button (click)="analysisForm.get('linearityAnalysisMethod').reset();linearityAnalysisChange()" matSuffix>
+          <mat-icon>close</mat-icon>
+        </button>
+        <button *ngIf="!analysisForm.get('linearityAnalysisMethod').value && !analysisForm.get('linearityAnalysisMethod').disabled" type="button" mat-icon-button matSuffix>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-error *ngIf="analysisForm.get('linearityAnalysisMethod').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="20">
+        <mat-label>{{app.screen.Dimensionality_reduction}}</mat-label>
+        <input matInput [matAutocomplete]="dimensionalityReductionMethod" formControlName="dimensionalityReductionMethod">
+        <mat-autocomplete #dimensionalityReductionMethod="matAutocomplete" [displayWith]="dimensionalityReductionMethodFilter.displayItem" >
+          <mat-option *ngFor="let item of dimensionalityReductionMethodFilter.filteredItems| async" [value]="item">
+            <span>{{ item.description }}</span>
+          </mat-option>
+        </mat-autocomplete>
+        <button *ngIf="analysisForm.get('dimensionalityReductionMethod').value && !analysisForm.get('dimensionalityReductionMethod').disabled" type="button" mat-icon-button (click)="analysisForm.get('dimensionalityReductionMethod').reset()" matSuffix>
+          <mat-icon>close</mat-icon>
+        </button>
+        <button *ngIf="!analysisForm.get('dimensionalityReductionMethod').value && !analysisForm.get('dimensionalityReductionMethod').disabled" type="button" mat-icon-button matSuffix>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-error *ngIf="analysisForm.get('dimensionalityReductionMethod').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="20" >
+        <mat-label>{{app.screen.Normality_analysis}}</mat-label>
+        <input matInput [matAutocomplete]="normalityAnalysisMethod" formControlName="normalityAnalysisMethod">
+        <mat-autocomplete #normalityAnalysisMethod="matAutocomplete" [displayWith]="normalityAnalysisMethodFilter.displayItem" (optionSelected)="normalityAnalysisChange()">
+          <mat-option *ngFor="let item of normalityAnalysisMethodFilter.filteredItems| async" [value]="item">
+            <span>{{ item.description }}</span>
+          </mat-option>
+        </mat-autocomplete>
+        <button *ngIf="analysisForm.get('normalityAnalysisMethod').value && !analysisForm.get('normalityAnalysisMethod').disabled" type="button" mat-icon-button (click)="analysisForm.get('normalityAnalysisMethod').reset();normalityAnalysisChange()" matSuffix>
+          <mat-icon>close</mat-icon>
+        </button>
+        <button *ngIf="!analysisForm.get('normalityAnalysisMethod').value && !analysisForm.get('normalityAnalysisMethod').disabled" type="button" mat-icon-button matSuffix>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-error *ngIf="analysisForm.get('normalityAnalysisMethod').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field fxFlex="20" >
+        <mat-label>{{app.screen.Clustering}}</mat-label>
+        <input matInput [matAutocomplete]="clusteringMethod" formControlName="clusteringMethod" >
+        <mat-autocomplete #clusteringMethod="matAutocomplete" [displayWith]="clusteringMethodFilter.displayItem" >
+          <mat-option *ngFor="let item of clusteringMethodFilter.filteredItems| async" [value]="item">
+            <span>{{ item.description }}</span>
+          </mat-option>
+        </mat-autocomplete>
+        <button *ngIf="analysisForm.get('clusteringMethod').value && !analysisForm.get('clusteringMethod').disabled" type="button" mat-icon-button (click)="analysisForm.get('clusteringMethod').reset()" matSuffix>
+          <mat-icon>close</mat-icon>
+        </button>
+        <button *ngIf="!analysisForm.get('clusteringMethod').value && !analysisForm.get('clusteringMethod').disabled" type="button" mat-icon-button matSuffix>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-error *ngIf="analysisForm.get('clusteringMethod').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+      </mat-form-field>
+
+
+      <div class="actions" fxFlex="20">
+        <button class="create" (click)="runAnalysis2D()" type="button" mat-mini-fab color="primary" [disabled]="!isValidForm()">
+          <mat-icon>rotate_right</mat-icon>
+        </button>
+      </div>
+
+    </div>
+    <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px" class="options header">
+      <mat-form-field fxFlex="80" >
+        <mat-label>{{app.screen.Saved_Analysis_Results}}</mat-label>
+        <input matInput [matAutocomplete]="savedAnalysisResults" formControlName="savedAnalysisResults" >
+        <mat-autocomplete #savedAnalysisResults="matAutocomplete" [displayWith]="savedAnalysisResultsFilter.displayItem" (optionSelected)="savedAnalysisResultsChange()">
+          <mat-option *ngFor="let item of savedAnalysisResultsFilter.filteredItems| async" [value]="item" [disabled]="item.idState == 1">
+            <mat-icon>{{item.idState == 1 ? 'sync' : item.idState == 2 ? 'check' : 'error'}}</mat-icon>
+            <span>{{ item.description }}</span>
+          </mat-option>
+        </mat-autocomplete>
+        <button *ngIf="analysisForm.get('savedAnalysisResults').value && !analysisForm.get('savedAnalysisResults').disabled" type="button" mat-icon-button (click)="analysisForm.get('savedAnalysisResults').reset()" matSuffix>
+          <mat-icon>close</mat-icon>
+        </button>
+        <button *ngIf="!analysisForm.get('savedAnalysisResults').value && !analysisForm.get('savedAnalysisResults').disabled" type="button" mat-icon-button matSuffix>
+          <mat-icon>arrow_drop_down</mat-icon>
+        </button>
+        <mat-error *ngIf="analysisForm.get('savedAnalysisResults').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+      </mat-form-field>
+    </div>
+    </form>
+  <div #graph2d  [ngClass]="chartClassName" [style.width]="'100%'"></div>
+</div>

@@ -1,0 +1,20 @@
+app-detail-simulation-edit{
+    .person{
+        height: 100%;
+    }
+    .mat-dialog-content{
+        max-height: none;
+    }
+    .download-btn, .setting-btn{
+        width: 30px;
+        height: 30px;
+    }
+    .download-btn .mat-button-wrapper, .setting-btn .mat-button-wrapper{
+        display: inherit;
+        margin-left: 1px;
+        padding-top: 3px;
+    }
+    .download-btn{
+        margin-right: 9px;
+    }
+}

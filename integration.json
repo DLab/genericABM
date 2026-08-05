@@ -1,0 +1,86 @@
+curl -X POST http://localhost:18080/schemas \
+  -H "Content-Type: application/json" \
+  -d '{
+    "schema_id": "sc_11",
+    "name": "Social Simulations 11 JM",
+    "version": "1.0.0",
+    "description": "Social Simulations 11 JM",
+    "json_schema": {
+      "type": "object",
+      "properties": {
+        "pozo": {
+          "type": "string",
+          "description": "Unique sensor identifier"
+        },
+      },
+      "required": ["pozo"]
+    }
+  }'
+
+
+  curl -X POST http://localhost:18080/schemas \
+  -H "Content-Type: application/json" \
+  -d '{
+    "schema_id": "Social0_Simulations_11_JM",
+    "name": "Social Simulations 11 JM",
+    "version": "1.1.1",
+    "description": "Social Simulations 11 JM 2",
+    "json_schema": {
+      "type": "object",
+      "properties": {
+        "model_id": {
+          "type": "string"
+        },
+        "pozo": {
+          "type": "number",
+          "description": "Pozo"
+        },
+        "agenti": {
+          "type": "object",
+          "properties": {
+            "agent_id": {"type": "number"},
+            "conf": {"type": "number"},
+            "repu": {"type": "number"},
+            "reci": {"type": "number"},
+            "rho": {"type": "number"}
+          }
+        },
+        "agentj": {
+          "type": "object",
+          "properties": {
+            "agent_id": {"type": "number"},
+            "conf": {"type": "number"},
+            "repu": {"type": "number"},
+            "reci": {"type": "number"},
+            "rho": {"type": "number"}
+          }
+        }
+      },
+      "required": ["model_id", "pozo", "agenti", "agentj"]
+    }
+  }'
+
+
+curl -X POST http://localhost:18080/dynamic-data \
+    -H "Content-Type: application/json" \
+    -d '{
+      "schema_id": "Social0_Simulations_11_JM",
+      "data": {
+        "model_id": "0002-887x",
+        "pozo": 2.56,
+        "agenti": {
+            "agent_id": 1,
+            "conf": 0.56,
+            "repu": 0.36,
+            "reci": 0.46
+        },
+        "agentj": {
+            "agent_id": 2,
+            "conf": 0.57,
+            "repu": 0.37,
+            "reci": 0.47
+        }
+      }
+    }'
+
+curl http://localhost:18080/dynamic-data?schema_id=Social0_Simulations_11_JM&limit=50

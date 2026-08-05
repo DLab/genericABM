@@ -1,0 +1,52 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between center">
+  <div fxFlex="20">{{title}}</div>
+  <div fxFlex="80" fxLayoutAlign="end center" [style.margin-top]="'10px'" [style.margin-bottom]="'10px'">
+    <button class="download-btn" 
+        (click)="downloadChart()" 
+        type="button"         
+        mat-mini-fab color="accent" 
+        [matTooltip]="app.screen.Haga_click_para_descargar_la_informacion_generada_por_la_vista_procesada">
+        <mat-icon>cloud_download</mat-icon>
+    </button>
+    <button class="setting-btn" 
+        (click)="colorSettings()" 
+        type="button"         
+        mat-mini-fab color="accent" 
+        [matTooltip]="app.screen.Haga_click_para_personalizar_los_colores_del_grafico">
+        <mat-icon>palette</mat-icon>
+    </button>
+  </div>
+
+  <button type="button" mat-icon-button tabindex="-1" [mat-dialog-close]="true">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content>
+  <div fxLayout="column" fxLayoutAlign="start stretch">
+    <div *ngFor="let graph of optionsGraph; let i = index" [style.width]="'100%'">
+      <app-graph-component [title]="title" [caption]="caption" [numSteps]="numSteps" [item]="item"
+                    [graph]="graph" 
+                    [parent]="ctr"      
+                    [pozo]="isNormal ? 'mean' : 'median'"
+                    [analisysProperties]="analisysProperties"
+                    [itemStyleColor]="itemsColors.itemStyleColor"
+                    [indexGraph]="i"></app-graph-component>
+    </div>
+  </div>
+  
+</mat-dialog-content>
+
+<div style="visibility: hidden; position: fixed"
+    [style.left]="contextMenuPosition.x"
+    [style.top]="contextMenuPosition.y"
+    [matMenuTriggerFor]="contextMenu">
+</div>
+<mat-menu #contextMenu="matMenu">
+	<ng-template matMenuContent let-item="item">
+		<button mat-menu-item (click)="openNewGraph(item)" *ngIf="item.indexGraph == 0">{{app.screen.Open_new_graph}}</button>
+		<button mat-menu-item (click)="removeFromGraph(item)" *ngIf="item.indexGraph > 0">{{app.screen.Remove_from_graph}}</button>
+    <button mat-menu-item  *ngFor="let graph of moveToGraphs; let i = index" (click)="moveToGraph(item, graph)">{{app.screen.Move_to_graph + ' ' + (i + 1)}}</button>
+    
+	</ng-template>
+</mat-menu>

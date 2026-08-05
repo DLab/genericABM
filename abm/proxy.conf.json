@@ -1,0 +1,256 @@
+{
+    "/service/restServices/uploadFile": {
+      "target": "http://localhost:8080/generic_abm",
+      "secure": false,
+      "changeOrigin": true,
+      "logLevel": "debug"
+    },
+    "/service/restServices/exportToExcel": {
+      "target": "http://localhost:8080/generic_abm",
+      "secure": false,
+      "changeOrigin": true,
+      "logLevel": "debug"
+    },
+    "/service/restServices/consultarMultiplesParametros": {
+      "target": "http://localhost:8080/generic_abm",
+      "secure": false,
+      "changeOrigin": true,
+      "logLevel": "debug"
+    },
+    "/service/restServices/obtieneCondicionesIniciales": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/setCurrentUser": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/changePassword": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/getCurrentUser": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/getScreen": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+
+
+      "/service/restServices/consultarUsuarios": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/eliminarUsuario": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/guardarUsuario": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/consultarRoles": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/obtenerAccionesxFuncionRol": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/eliminarRol": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/guardarRol": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+
+      "/service/restServices/waitForProcess": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/consultaDetalleRol": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/saveUserConfiguration": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/tableQuery": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/tableTypeQuery": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/tableDelete": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/tableSave": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/tableDetailQuery": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/modelQuery": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/modelDelete": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/modelSave": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/modelDetailQuery": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/downloadSourceFile": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+
+      "/service/restServices/simulationsQuery": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/simulationDelete": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/simulationSave": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/simulationDetailQuery": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/simulate": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/downloadSimulation": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/simulationScenaryQuery": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/cancelSimulation": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/getProgressSimulation": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/getAnalytics": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/getAnalysisResults": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/getAnalysisResultContent": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      },
+      "/service/restServices/deleteAnalysisResult": {
+        "target": "http://localhost:8080/generic_abm",
+        "secure": false,
+        "changeOrigin": true,
+        "logLevel": "debug"
+      }
+      
+      
+      
+  }
+

@@ -1,0 +1,21 @@
+app-simulations{
+    .cdk-column-privated{
+        width: 38px;
+    }
+    .progress {
+        height: 100%;
+        border-radius: 4px;
+        background-color: #1e7bd5;
+        transition: 0.5s all;
+        padding: 0px 5px;
+        border-radius: 7px;
+      }    
+    .inner-progress{
+        display: inline-block;
+    }
+    .container-progress{
+        background-color: #bbdefb;
+        width: 100%;
+        border-radius: 7px;
+    }
+}

@@ -1,0 +1,31 @@
+<div fxLayout="column" fxLayoutGap="8px">
+  <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px" class="options header" >
+
+    <mat-checkbox color="accent" inderterminate="false" class="log-scale" fxFlex="10"
+      [(ngModel)]="logScale" 
+      (change)="changeLogScale()">{{app.screen.LogarithmicScale}}</mat-checkbox>   
+
+    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px"  [style.margin-top]="'20px'" fxFlex="90">
+      <mat-checkbox *ngFor="let item of firstRow" color="accent" inderterminate="false" [style.width]="'12%'"
+          [(ngModel)]="item.selected" 
+          (change)="selectedSeriesChange()" 
+          (contextmenu)="openMenu($event, item)"
+          [style.color]="itemStyleColor[item.name]">{{item.label}}</mat-checkbox>      
+    </div>    
+  </div>
+  <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px" class="options header">
+    <mat-radio-group [(ngModel)]="pozo" fxLayout="row" fxLayoutGap="10px" (change)="changePozo()" fxFlex="10">
+      <mat-radio-button class="radio" value="mean">{{app.screen.Mean}}</mat-radio-button>
+      <mat-radio-button class="radio" value="median">{{app.screen.Median}}</mat-radio-button>
+    </mat-radio-group>  
+    <div fxLayout="row" fxLayoutAlign="center center" fxLayoutGap="20px"  [style.margin-top]="'20px'" fxFlex="90">
+      <mat-checkbox *ngFor="let item of secondRow" color="accent" inderterminate="false" [style.width]="'12%'"
+          [(ngModel)]="item.selected" 
+          (change)="selectedSeriesChange()" 
+          (contextmenu)="openMenu($event, item)"
+          [style.color]="itemStyleColor[item.name + '_STD']">{{item.label}}</mat-checkbox>      
+    </div>
+
+  </div>
+  <div #graph [ngClass]="chartClassName" [style.width]="'100%'"></div>
+</div>

@@ -1,0 +1,12 @@
+app-selected-properties{
+    .person{
+        height: 300px;
+    }
+    ng-select{
+        width: 100% !important;
+    }
+    .mat-dialog-content{
+        max-height: 480px;
+        height: 100%;
+    }
+}

@@ -1,0 +1,64 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between center">
+  <div>{{app.screen.Action}}</div>
+  <button type="button" mat-icon-button tabindex="-1" [mat-dialog-close]="true">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content>
+  <div fxLayout="column" fxLayoutGap="8px">
+    <form [formGroup]="form" >
+      <div id="person-div" class="person">
+
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+
+          <mat-form-field fxFlex="32">
+            <mat-label>{{app.screen.Name}}</mat-label>
+            <input type="text" codigo formControlName="name"  maxlength="100" matInput required>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="67">
+            <mat-label>{{app.screen.Descripcion}}</mat-label>
+            <input type="text" codigo formControlName="description"  maxlength="100" matInput >
+          </mat-form-field>
+
+        </div>
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px" >
+          <div class="additional-code" [style.height]="additionalCodeHeight">
+            <div id="action-container" fxLayout="column" fxLayoutGap="8px" >
+              <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+                <div class="edit-code" [style.width]="'100%'">{{app.screen.Codigo}}</div>              
+              </div>
+              <app-code-editor *ngFor="let action of actions" [model]="item.model" 
+                  [mathFieldName]="action.fieldName"
+                  [source]="action" 
+                  addButtons="true"
+                  [editable]="item.editable"
+                  (addItem)="addItem($event)"
+                  (codeChange)="codeChange()"
+                  (removeItem)="removeItem($event)"></app-code-editor> 
+            </div>              
+          </div>
+        </div>
+      </div>
+
+    </form>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" *ngIf="item.editable">
+  <button  mat-button [disabled]="!isFormValid()" (click)="save()">{{gl.screen.Guardar}}</button>
+</mat-dialog-actions>
+
+<div style="visibility: hidden; position: fixed"
+    [style.left]="contextMenuPosition.x"
+    [style.top]="contextMenuPosition.y"
+    [matMenuTriggerFor]="contextMenu">
+</div>
+<mat-menu #contextMenu="matMenu">
+	<ng-template matMenuContent let-item="item">
+		<button mat-menu-item (click)="_addItem(item, 'action')" >{{app.screen.Code}}</button>
+		<button mat-menu-item (click)="_addItem(item, 'If')" >{{app.screen.Condition}}</button>
+    <button mat-menu-item (click)="_addItem(item, 'Else')" >{{app.screen.ElseCondition}}</button>
+    <button mat-menu-item (click)="_addItem(item, 'EndIf')" >{{app.screen.EndCondition}}</button>
+	</ng-template>
+</mat-menu>

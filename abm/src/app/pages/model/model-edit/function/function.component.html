@@ -1,0 +1,134 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between center">
+  <div>{{app.screen.Function}}</div>
+  <button type="button" mat-icon-button tabindex="-1" [mat-dialog-close]="true">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content>
+  <div fxLayout="column" fxLayoutGap="8px">
+    <form [formGroup]="form" >
+      <div class="person">
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+
+          <mat-form-field fxFlex="30">
+            <mat-label>{{app.screen.Name}}</mat-label>
+            <input type="text" codigo formControlName="name"  maxlength="100" matInput required (change)="changeName()">
+          </mat-form-field>
+
+          <mat-form-field fxFlex="30">
+            <mat-label>{{app.screen.AliasName}}</mat-label>
+            <input type="text" codigo formControlName="aliasName"  maxlength="100" matInput required>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="30">
+            <mat-label>{{gl.screen.Result}}</mat-label>
+            <input matInput [matAutocomplete]="resultType" formControlName="resultTypeId" required>
+            <mat-autocomplete #resultType="matAutocomplete" [displayWith]="resultTypeFilter.displayItem" >
+              <mat-option *ngFor="let item of resultTypeFilter.filteredItems| async" [value]="item">
+                <span>{{ item.description }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="form.get('resultTypeId').value && !form.get('resultTypeId').disabled" type="button" mat-icon-button (click)="form.get('resultTypeId').reset()" matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+            <button *ngIf="!form.get('resultTypeId').value && !form.get('resultTypeId').disabled" type="button" mat-icon-button matSuffix>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('resultTypeId').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+          </mat-form-field>
+
+        </div>
+
+      </div>
+
+    </form>
+    <mat-tab-group  fxFlex (selectedTabChange)="selectedTabChange($event)" >
+      <mat-tab label="{{gl.screen.Parameters}}">
+        <fury-card-content class="padding-top">
+          <fury-list name="{{app.screen.Parameters}}" [columns]="parameterColumns">
+            <div class="actions">
+              <button class="create"
+                      (click)="addParameter()"
+                      *ngIf="item.editable"
+                      type="button"
+                      mat-mini-fab color="accent"
+                      [matTooltip]="app.screen.Agregar">
+                <mat-icon>add</mat-icon>
+              </button>
+            </div>
+            <table [dataSource]="parameterDataSource" mat-table matSort>
+
+              <ng-container *ngFor="let column of parameterColumns">
+                <ng-container *ngIf="column.isModelProperty" [matColumnDef]="column.property">
+                  <th *matHeaderCellDef mat-header-cell mat-sort-header> {{ column.name }}</th>
+                  <td *matCellDef="let row" mat-cell>
+                    {{ getParameterDescription(row, column) }}
+                  </td>
+                </ng-container>
+              </ng-container>
+
+              <ng-container matColumnDef="accion">
+                <th *matHeaderCellDef class="actions-cell" mat-header-cell mat-sort-header>{{ app.screen.Accion }}</th>
+                <td *matCellDef="let row" class="actions-cell" mat-cell>
+                  <div  class="acction-cell">
+                    <div class="action-cell-command">
+                      <i  aria-hidden="true" title="{{gl.screen.Visualiza_el_registro}}" class="fa fa-eye" (click)="editParameter(row, false)"></i>
+                      <i  aria-hidden="true" title="{{gl.screen.Editar_registro}}" class="fa fa-pencil" (click)="editParameter(row, true)" *ngIf="item.editable"></i>
+                      <i  aria-hidden="true" title="{{gl.screen.Borra_el_registro}}" class="fa fa-trash" (click)="deleteParameter(row)" *ngIf="item.editable"></i>
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+
+              <tr *matHeaderRowDef="parameterVisibleColumns" mat-header-row></tr>
+              <tr *matRowDef="let row; columns: parameterVisibleColumns;"
+                  class="clickable route-animations-elements"
+                  mat-row></tr>
+
+            </table>
+          </fury-list>
+        </fury-card-content>
+      </mat-tab> 
+      <mat-tab label="{{gl.screen.Code}}">
+        <ng-template matTabContent>
+          <div class="additional-code" [style.height]="additionalCodeHeight">
+            <div id="action-container" fxLayout="column" fxLayoutGap="8px">
+              <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+                <div class="edit-code" [style.width]="'100%'">{{app.screen.Codigo}}*</div>              
+              </div>
+              <app-code-editor *ngFor="let action of actions" [model]="item.model" 
+                  [mathFieldName]="action.fieldName"
+                  [source]="action" 
+                  addButtons="true"
+                  initializeTime="100"
+                  [editable]="item.editable"
+                  (addItem)="addItem($event)"
+                  (codeChange)="codeChange()"
+                  (removeItem)="removeItem($event)"></app-code-editor> 
+            </div>              
+          </div>
+        </ng-template>
+      </mat-tab>
+
+    </mat-tab-group>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" *ngIf="item.editable">
+  <button  mat-button [disabled]="!isFormValid()" (click)="save()">{{gl.screen.Guardar}}</button>
+</mat-dialog-actions>
+
+<div style="visibility: hidden; position: fixed"
+    [style.left]="contextMenuPosition.x"
+    [style.top]="contextMenuPosition.y"
+    [matMenuTriggerFor]="contextMenu">
+</div>
+<mat-menu #contextMenu="matMenu">
+	<ng-template matMenuContent let-item="item">
+		<button mat-menu-item (click)="_addItem(item, 'action')" >{{app.screen.Code}}</button>
+		<button mat-menu-item (click)="_addItem(item, 'If')" >{{app.screen.Condition}}</button>
+    <button mat-menu-item (click)="_addItem(item, 'Else')" >{{app.screen.ElseCondition}}</button>
+    <button mat-menu-item (click)="_addItem(item, 'EndIf')" >{{app.screen.EndCondition}}</button>
+    <button mat-menu-item (click)="_addItem(item, 'Return')" >{{app.screen.Return}}</button>
+	</ng-template>
+</mat-menu>

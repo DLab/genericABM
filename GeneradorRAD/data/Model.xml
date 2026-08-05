@@ -10,6 +10,7 @@
   <field property="private"        		sqlName="private"    			type="Boolean"/>
   <field property="singleAgentsList"    sqlName="single_agents_list"    type="Boolean"/>
   <field property="synchronized"    	sqlName="synchronized"    		type="Boolean"/>
+  <field property="kqmlIntegration"    	sqlName="kqmlIntegration"    	type="Boolean"/>
   <field property="additionalCode"  	sqlName="additional_code"    	type="String"/>
   <field property="timestamp"       	sqlName="timestamp"    			type="Timestamp4"  />
   <field property="runWith"      		sqlName="run_with"    			type="String"  />

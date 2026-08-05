@@ -1,0 +1,38 @@
+app-agent-edit{
+    .additional-code .mat-form-field-wrapper, fury-list{
+        height: 400px;
+        max-height: 400px;
+    }
+    .mat-dialog-content{
+        max-height: 100% !important;
+    }
+    .action-cell-command{
+        float: left;
+    }
+    .acction-cell{
+        width: 100%;
+        text-align: right;
+        min-width: 78px;
+    }
+    i.fa{
+        padding-left: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    i.fa-plus{
+        float: left;
+        padding-top: 5px;
+        padding-right: 15px;
+    }
+    .cdk-column-rangeValues, .cdk-column-detailedAnalysis, .cdk-column-initialValue
+    , .cdk-column-generalAnalysisId, .cdk-column-FunctionType{
+        width: 35px;
+        text-align: center;
+    }
+    .cdk-column-modelNameRef, .cdk-column-generalAnalysisId, .cdk-column-isRef{
+        width: 25px;
+        text-align: center;
+    }
+
+
+}

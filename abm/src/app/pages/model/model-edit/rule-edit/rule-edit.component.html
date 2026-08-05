@@ -1,0 +1,167 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between center">
+  <div>{{app.screen.Rule}}</div>
+  <button type="button" mat-icon-button tabindex="-1" [mat-dialog-close]="true">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content>
+  <div fxLayout="column" fxLayoutGap="8px" style="overflow: hidden;">
+    <form [formGroup]="form" >
+      <div class="person">
+
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px" class="options">
+          <mat-checkbox color="accent" inderterminate="false" formControlName="initial" (change)="initialChange()">{{app.screen.Initial}}</mat-checkbox>
+        </div>
+
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+
+          <mat-form-field fxFlex="30">
+            <mat-label>{{app.screen.Name}}</mat-label>
+            <input type="text" codigo formControlName="name"  maxlength="100" matInput required (blur)="changeName()">
+          </mat-form-field>
+
+          <mat-form-field fxFlex="60">
+            <mat-label>{{app.screen.Descripcion}}</mat-label>
+            <input type="text" codigo formControlName="description"  maxlength="100" matInput >
+          </mat-form-field>
+
+          <mat-form-field fxFlex="10">
+            <mat-label>{{app.screen.Position}}</mat-label>
+            <input [numberFormat]="0" [negativos]="false" type="text" codigo formControlName="position"  maxlength="2" matInput >
+          </mat-form-field>
+
+        </div>
+
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+
+          <mat-form-field fxFlex="50">
+            <mat-label>{{gl.screen.Iterate}}</mat-label>
+            <input matInput [matAutocomplete]="iterate" formControlName="iterate" >
+            <mat-autocomplete #iterate="matAutocomplete" [displayWith]="iterateFilter.displayItem" (optionSelected)="iterateChange()">
+              <mat-option *ngFor="let item of iterateFilter.filteredItems| async" [value]="item">
+                <span>{{ item.name }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="form.get('iterate').value && !form.get('iterate').disabled" type="button" mat-icon-button (click)="form.get('iterate').reset()" matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+            <button *ngIf="!form.get('iterate').value && !form.get('iterate').disabled" type="button" mat-icon-button matSuffix>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('iterate').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+          </mat-form-field>
+          
+          <mat-form-field fxFlex="50">
+            <mat-label>{{gl.screen.Meet}}</mat-label>
+            <input matInput [matAutocomplete]="meet" formControlName="meet" >
+            <mat-autocomplete #meet="matAutocomplete" [displayWith]="meetFilter.displayItem" >
+              <mat-option *ngFor="let item of meetFilter.filteredItems| async" [value]="item">
+                <span>{{ item.name }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="form.get('meet').value && !form.get('meet').disabled" type="button" mat-icon-button (click)="form.get('meet').reset()" matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+            <button *ngIf="!form.get('meet').value && !form.get('meet').disabled" type="button" mat-icon-button matSuffix>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('meet').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+          </mat-form-field>
+
+        </div>
+
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+
+          <mat-form-field fxFlex="50">
+            <mat-label>{{gl.screen.BeforeAction}}</mat-label>
+            <input matInput [matAutocomplete]="beforeAction" formControlName="beforeActionName">
+            <mat-autocomplete #beforeAction="matAutocomplete" [displayWith]="beforeActionFilter.displayItem" >
+              <mat-option *ngFor="let item of beforeActionFilter.filteredItems| async" [value]="item">
+                <span>{{ item.name }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="form.get('beforeActionName').value && !form.get('beforeActionName').disabled" type="button" mat-icon-button (click)="form.get('beforeActionName').reset()" matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+            <button *ngIf="!form.get('beforeActionName').value && !form.get('beforeActionName').disabled" type="button" mat-icon-button matSuffix>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('beforeActionName').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="50">
+            <mat-label>{{gl.screen.AfterAction}}</mat-label>
+            <input matInput [matAutocomplete]="afterAction" formControlName="afterActionName" >
+            <mat-autocomplete #afterAction="matAutocomplete" [displayWith]="afterActionFilter.displayItem" >
+              <mat-option *ngFor="let item of afterActionFilter.filteredItems| async" [value]="item">
+                <span>{{ item.name }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="form.get('afterActionName').value && !form.get('afterActionName').disabled" type="button" mat-icon-button (click)="form.get('afterActionName').reset()" matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+            <button *ngIf="!form.get('afterActionName').value && !form.get('afterActionName').disabled" type="button" mat-icon-button matSuffix>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('afterActionName').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+          </mat-form-field>
+        </div>         
+
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+
+          <mat-form-field fxFlex="50">
+            <mat-label>{{gl.screen.TrueAction}}</mat-label>
+            <input matInput [matAutocomplete]="trueAction" formControlName="trueActionName">
+            <mat-autocomplete #trueAction="matAutocomplete" [displayWith]="trueActionFilter.displayItem" >
+              <mat-option *ngFor="let item of trueActionFilter.filteredItems| async" [value]="item">
+                <span>{{ item.name }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="form.get('trueActionName').value && !form.get('trueActionName').disabled" type="button" mat-icon-button (click)="form.get('trueActionName').reset()" matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+            <button *ngIf="!form.get('trueActionName').value && !form.get('trueActionName').disabled" type="button" mat-icon-button matSuffix>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('trueActionName').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="50">
+            <mat-label>{{gl.screen.FalseAction}}</mat-label>
+            <input matInput [matAutocomplete]="falseAction" formControlName="falseActionName" >
+            <mat-autocomplete #falseAction="matAutocomplete" [displayWith]="falseActionFilter.displayItem" >
+              <mat-option *ngFor="let item of falseActionFilter.filteredItems| async" [value]="item">
+                <span>{{ item.name }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="form.get('falseActionName').value && !form.get('falseActionName').disabled" type="button" mat-icon-button (click)="form.get('falseActionName').reset()" matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+            <button *ngIf="!form.get('falseActionName').value && !form.get('falseActionName').disabled" type="button" mat-icon-button matSuffix>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('falseActionName').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+          </mat-form-field>
+        </div>       
+
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px" >
+          <div class="additional-code">
+            <div fxLayout="column" fxLayoutGap="8px">
+              <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+                <div class="edit-code" [style.width]="'100%'">{{app.screen.ConditionalCode}}*</div>
+              </div>
+              <app-code-editor #codeEdit [model]="item.model" [source]="conditionalCode" [editable]="item.editable"></app-code-editor>            
+            </div>              
+          </div>
+        </div>
+
+      </div>
+
+    </form>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" *ngIf="item.editable">
+  <button  mat-button [disabled]="!isFormValid()" (click)="save()">{{gl.screen.Guardar}}</button>
+</mat-dialog-actions>
+

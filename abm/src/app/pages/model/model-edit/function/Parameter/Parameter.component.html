@@ -1,0 +1,63 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between center">
+  <div>{{app.screen.Parameter}}</div>
+  <button type="button" mat-icon-button tabindex="-1" [mat-dialog-close]="true">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content>
+  <div fxLayout="column" fxLayoutGap="8px">
+    <form [formGroup]="form" >
+      <div class="person">
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+
+          <mat-form-field fxFlex="20">
+            <mat-label>{{app.screen.Name}}</mat-label>
+            <input type="text" codigo formControlName="name"  maxlength="100" matInput required >
+          </mat-form-field>
+
+          <mat-form-field fxFlex="40">
+            <mat-label>{{gl.screen.Tipo}}</mat-label>
+            <input matInput [matAutocomplete]="type" formControlName="typeId" required>
+            <mat-autocomplete #type="matAutocomplete" [displayWith]="typeFilter.displayItem" >
+              <mat-option *ngFor="let item of typeFilter.filteredItems| async" [value]="item">
+                <span>{{ item.description }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="form.get('typeId').value && !form.get('typeId').disabled" type="button" mat-icon-button (click)="form.get('typeId').reset()" matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+            <button *ngIf="!form.get('typeId').value && !form.get('typeId').disabled" type="button" mat-icon-button matSuffix>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('typeId').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="40" *ngIf="form.get('typeId').value && form.get('typeId').value.id == 8">
+            <mat-label>{{gl.screen.AgentType}}</mat-label>
+            <input matInput [matAutocomplete]="agentType" formControlName="agentType">
+            <mat-autocomplete #agentType="matAutocomplete" [displayWith]="agentTypeFilter.displayItem" >
+              <mat-option *ngFor="let item of agentTypeFilter.filteredItems| async" [value]="item">
+                <span>{{ item.name }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="form.get('agentType').value && !form.get('agentType').disabled" type="button" mat-icon-button (click)="form.get('agentType').reset()" matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+            <button *ngIf="!form.get('agentType').value && !form.get('agentType').disabled" type="button" mat-icon-button matSuffix>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('agentType').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+          </mat-form-field>
+        </div>
+
+      </div>
+
+    </form>
+
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" *ngIf="item.editable">
+  <button  mat-button [disabled]="!isFormValid()" (click)="save()">{{gl.screen.Guardar}}</button>
+</mat-dialog-actions>
+

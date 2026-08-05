@@ -1,0 +1,12 @@
+/target/
+*.class
+.DS_Store
+/bin/
+
+# Angular
+**/.angular/cache/
+**/node_modules/
+**/dist/
+
+# macOS
+.DS_Store

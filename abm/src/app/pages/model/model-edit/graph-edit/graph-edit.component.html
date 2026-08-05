@@ -1,0 +1,81 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between center">
+  <div>{{app.screen.Graph}}</div>
+  <button type="button" mat-icon-button tabindex="-1" [mat-dialog-close]="true">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content>
+  <div fxLayout="column" fxLayoutGap="8px">
+    <form [formGroup]="form" >
+      <div class="person">
+
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+
+          <mat-form-field fxFlex="25">
+            <mat-label>{{app.screen.Name}}</mat-label>
+            <input type="text" codigo formControlName="name"  maxlength="100" matInput required>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="25">
+            <mat-label>{{gl.screen.GraphType}}</mat-label>
+            <input matInput [matAutocomplete]="graphType" formControlName="graphTypeId" required>
+            <mat-autocomplete #graphType="matAutocomplete" [displayWith]="graphTypeFilter.displayItem" >
+              <mat-option *ngFor="let item of graphTypeFilter.filteredItems| async" [value]="item">
+                <span>{{ item.description }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="form.get('graphTypeId').value && !form.get('graphTypeId').disabled" type="button" mat-icon-button (click)="form.get('graphTypeId').reset()" matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+            <button *ngIf="!form.get('graphTypeId').value && !form.get('graphTypeId').disabled" type="button" mat-icon-button matSuffix>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('graphTypeId').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="25">
+            <mat-label>{{gl.screen.Topology}}</mat-label>
+            <input matInput [matAutocomplete]="graphTopology" formControlName="graphTopologyId" required>
+            <mat-autocomplete #graphTopology="matAutocomplete" [displayWith]="graphTopologyFilter.displayItem" >
+              <mat-option *ngFor="let item of graphTopologyFilter.filteredItems| async" [value]="item">
+                <span>{{ item.description }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="form.get('graphTopologyId').value && !form.get('graphTopologyId').disabled" type="button" mat-icon-button (click)="form.get('graphTypeId').reset()" matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+            <button *ngIf="!form.get('graphTopologyId').value && !form.get('graphTopologyId').disabled" type="button" mat-icon-button matSuffix>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('graphTopologyId').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="25">
+            <mat-label>{{gl.screen.Algorithm}}</mat-label>
+            <input matInput [matAutocomplete]="graphAlgorithm" formControlName="graphAlgorithmId" required>
+            <mat-autocomplete #graphAlgorithm="matAutocomplete" [displayWith]="graphAlgorithmFilter.displayItem" >
+              <mat-option *ngFor="let item of graphAlgorithmFilter.filteredItems| async" [value]="item">
+                <span>{{ item.description }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="form.get('graphAlgorithmId').value && !form.get('graphAlgorithmId').disabled" type="button" mat-icon-button (click)="form.get('graphAlgorithmId').reset()" matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+            <button *ngIf="!form.get('graphAlgorithmId').value && !form.get('graphAlgorithmId').disabled" type="button" mat-icon-button matSuffix>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('graphAlgorithmId').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+          </mat-form-field>
+
+        </div>
+
+      </div>
+
+    </form>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" *ngIf="item.editable">
+  <button  mat-button [disabled]="!isFormValid()" (click)="save()">{{gl.screen.Guardar}}</button>
+</mat-dialog-actions>
+

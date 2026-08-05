@@ -15,5 +15,6 @@
   <field property="variableTypeId"  	sqlName="variable_type_id"    		type="Integer"/>
   <field property="memoryTypeId"  		sqlName="memory_type_id"    		type="Integer"/>
   <field property="functionTypeId"  	sqlName="function_type_id"    		type="Integer"/>
+  <field property="kqmlIntegration"    	sqlName="kqmlIntegration"    		type="Boolean"/>
   
 </Entity>

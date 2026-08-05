@@ -1,0 +1,155 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between center">
+  <div>{{app.screen[title]}}</div>
+  <button type="button" mat-icon-button tabindex="-1" [mat-dialog-close]="true">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content>
+  <div fxLayout="column" fxLayoutGap="8px">
+    <form [formGroup]="form" >
+      <div class="person">
+
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px" class="options">
+          <mat-checkbox color="accent" inderterminate="false" formControlName="rangeValues" [disabled]="item.isRef">{{app.screen.RangeValues}}</mat-checkbox>
+          <mat-checkbox color="accent" inderterminate="false" formControlName="detailedAnalysis">{{app.screen.DetailedAnalysis}}</mat-checkbox>
+          <mat-checkbox color="accent" inderterminate="false" formControlName="kqmlIntegration" *ngIf="item.model.kqmlIntegration">{{app.screen.KqmlIntegration}}</mat-checkbox>
+        </div>
+
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+
+          <mat-form-field fxFlex="30">
+            <mat-label>{{app.screen.Name}}</mat-label>
+            <input type="text" codigo formControlName="name"  maxlength="100" matInput required (change)="changeName()">
+          </mat-form-field>
+
+          <mat-form-field fxFlex="30">
+            <mat-label>{{app.screen.AliasName}}</mat-label>
+            <input type="text" codigo formControlName="aliasName"  maxlength="100" matInput required (keydown)="keyDown($event)">
+          </mat-form-field>
+
+          <mat-form-field fxFlex="30">
+            <mat-label>{{gl.screen.GeneralAnalysis}}</mat-label>
+            <input matInput [matAutocomplete]="generalAnalysis" formControlName="generalAnalysisId" >
+            <mat-autocomplete #generalAnalysis="matAutocomplete" [displayWith]="generalAnalysisTypeFilter.displayItem" >
+              <mat-option *ngFor="let item of generalAnalysisTypeFilter.filteredItems| async" [value]="item">
+                <span>{{ item.description }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="form.get('generalAnalysisId').value && !form.get('generalAnalysisId').disabled" type="button" mat-icon-button (click)="form.get('generalAnalysisId').reset()" matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+            <button *ngIf="!form.get('generalAnalysisId').value && !form.get('generalAnalysisId').disabled" type="button" mat-icon-button matSuffix>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('generalAnalysisId').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+          </mat-form-field>
+
+        </div>
+
+        <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+
+          <mat-form-field fxFlex="30">
+            <mat-label>{{gl.screen.Tipo}}</mat-label>
+            <input matInput [matAutocomplete]="variableType" formControlName="variableTypeId" required>
+            <mat-autocomplete #variableType="matAutocomplete" [displayWith]="variableTypeFilter.displayItem" >
+              <mat-option *ngFor="let item of variableTypeFilter.filteredItems| async" [value]="item">
+                <span>{{ item.description }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="form.get('variableTypeId').value && !form.get('variableTypeId').disabled" type="button" mat-icon-button (click)="form.get('variableTypeId').reset()" matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+            <button *ngIf="!form.get('variableTypeId').value && !form.get('variableTypeId').disabled" type="button" mat-icon-button matSuffix>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('variableTypeId').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="30" *ngIf="form.get('variableTypeId').value != null && form.get('variableTypeId').value.id == 1">
+            <mat-label>{{app.screen.InitialValue}}</mat-label>
+            <input [numberFormat]="0" [negativos]="true" focusFormat type="text" formControlName="initialValue" matInput  >
+          </mat-form-field>
+
+          <mat-form-field fxFlex="30" *ngIf="form.get('variableTypeId').value != null && form.get('variableTypeId').value.id == 2">
+            <mat-label>{{app.screen.InitialValue}}</mat-label>
+            <input [numberFormat]="6" [negativos]="true" focusFormat type="text" formControlName="initialValue" matInput>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="30" *ngIf="form.get('variableTypeId').value != null && form.get('variableTypeId').value.id == 3">
+            <mat-label>{{app.screen.InitialValue}}</mat-label>
+            <input matInput [matAutocomplete]="initialValue" formControlName="initialValue" required>
+            <mat-autocomplete #initialValue="matAutocomplete" [displayWith]="booleanFilter.displayItem" >
+              <mat-option *ngFor="let item of booleanFilter.filteredItems| async" [value]="item">
+                <span>{{ item.description }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="form.get('initialValue').value && !form.get('initialValue').disabled" type="button" mat-icon-button (click)="form.get('initialValue').reset()" matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+            <button *ngIf="!form.get('initialValue').value && !form.get('initialValue').disabled" type="button" mat-icon-button matSuffix>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('initialValue').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="30" *ngIf="form.get('variableTypeId').value != null && form.get('variableTypeId').value.id == 4">
+            <mat-label>{{app.screen.InitialValue}}</mat-label>
+            <input type="text" codigo formControlName="initialValue" matInput >
+          </mat-form-field>
+
+          <mat-form-field fxFlex="30" *ngIf="form.get('variableTypeId').value != null && form.get('variableTypeId').value.id == 5">
+            <mat-label>{{app.screen.FunctionType}}</mat-label>
+            <input matInput [matAutocomplete]="functionType" formControlName="functionTypeId" required>
+            <mat-autocomplete #functionType="matAutocomplete" [displayWith]="functionTypeFilter.displayItem" >
+              <mat-option *ngFor="let item of functionTypeFilter.filteredItems| async" [value]="item">
+                <span>{{ item.description }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="form.get('functionTypeId').value && !form.get('functionTypeId').disabled" type="button" mat-icon-button (click)="form.get('functionTypeId').reset()" matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+            <button *ngIf="!form.get('functionTypeId').value && !form.get('functionTypeId').disabled" type="button" mat-icon-button matSuffix>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('functionTypeId').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+          </mat-form-field>
+
+          <mat-form-field fxFlex="15" *ngIf="form.get('variableTypeId').value != null && form.get('variableTypeId').value.id == 5">
+            <mat-label>{{app.screen.Mean}}</mat-label>
+            <input [numberFormat]="6" [negativos]="true" focusFormat type="text" formControlName="mean" matInput  required>
+          </mat-form-field>
+          <mat-form-field fxFlex="15" *ngIf="form.get('variableTypeId').value != null && form.get('variableTypeId').value.id == 5">
+            <mat-label>{{app.screen.SteDev}}</mat-label>
+            <input [numberFormat]="6" [negativos]="true" focusFormat type="text" formControlName="stdDev" matInput  required>
+          </mat-form-field>
+
+
+          <mat-form-field fxFlex="30" *ngIf="form.get('variableTypeId').value != null && form.get('variableTypeId').value.id == 6">
+            <mat-label>{{app.screen.MemoryType}}</mat-label>
+            <input matInput [matAutocomplete]="memoryType" formControlName="memoryTypeId" required>
+            <mat-autocomplete #memoryType="matAutocomplete" [displayWith]="memoryTypeFilter.displayItem" >
+              <mat-option *ngFor="let item of memoryTypeFilter.filteredItems| async" [value]="item">
+                <span>{{ item.description }}</span>
+              </mat-option>
+            </mat-autocomplete>
+            <button *ngIf="form.get('memoryTypeId').value && !form.get('memoryTypeId').disabled" type="button" mat-icon-button (click)="form.get('memoryTypeId').reset()" matSuffix>
+              <mat-icon>close</mat-icon>
+            </button>
+            <button *ngIf="!form.get('memoryTypeId').value && !form.get('memoryTypeId').disabled" type="button" mat-icon-button matSuffix>
+              <mat-icon>arrow_drop_down</mat-icon>
+            </button>
+            <mat-error *ngIf="form.get('memoryTypeId').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+          </mat-form-field>
+
+        </div>
+
+      </div>
+
+    </form>
+  </div>
+</mat-dialog-content>
+<mat-dialog-actions fxLayout="row" fxLayoutAlign="end center" *ngIf="item.editable">
+  <button  mat-button [disabled]="!isFormValid()" (click)="save()">{{gl.screen.Guardar}}</button>
+</mat-dialog-actions>
+

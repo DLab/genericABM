@@ -1,0 +1,28 @@
+<form [formGroup]="form">
+  <mat-dialog-content>
+    <div class="person">
+      <div fxLayout="row" fxLayoutGap.gt-sm="24px" >
+
+        <mat-form-field fxFlex="grow" class="field-1-2">
+          <mat-label>{{app.screen.Table_Type}}</mat-label>
+          <input matInput [matAutocomplete]="parentId" formControlName="parentId" required>
+          <mat-autocomplete #parentId="matAutocomplete" [displayWith]="filterTables.displayItem" (optionSelected)="parentChange()">
+            <mat-option *ngFor="let item of filterTables.filteredItems| async" [value]="item">
+              <span>{{ item.description }}</span>
+            </mat-option>
+          </mat-autocomplete>
+          <button *ngIf="form.get('parentId').value && !form.get('parentId').disabled" type="button" mat-icon-button (click)="form.get('parentId').reset();parentChange()" matSuffix>
+            <mat-icon>close</mat-icon>
+          </button>
+          <button *ngIf="!form.get('parentId').value" type="button" mat-icon-button matSuffix>
+            <mat-icon>arrow_drop_down</mat-icon>
+          </button>
+          <mat-error *ngIf="form.get('parentId').hasError('required')">{{gl.screen.Este_valor_es_requerido}}</mat-error>
+        </mat-form-field>        
+  
+
+      </div>
+
+    </div>
+  </mat-dialog-content>
+</form>

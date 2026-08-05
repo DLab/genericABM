@@ -1,0 +1,16 @@
+<div fxLayout="column" fxLayout.gt-sm="row">
+  <div [style.width]="(source.indent * 20) + 'px'"></div>
+  <div class="type-code" *ngIf="source.type != 'action'">{{source.type}}</div>
+  <div [id]="mathFieldName" class="math-field" [style.height]="mathFieldHeight" *ngIf="source.type != 'Else' && source.type != 'EndIf'"></div>
+  <div class="math-field" [style.height]="mathFieldHeight" *ngIf="source.type == 'Else' || source.type == 'EndIf'"></div>
+  <button type="button" mat-icon-button class="btn-properties" (click)="addEditor($event)" *ngIf="addButtons && editable">
+    <mat-icon>add</mat-icon>
+  </button>
+  <button type="button" mat-icon-button class="btn-properties" (click)="removeEditor()" *ngIf="addButtons && editable">
+    <mat-icon>delete</mat-icon>
+  </button>
+  <div class="btn-properties" *ngIf="source.type == 'Else' || source.type == 'EndIf'"></div>
+  <button type="button" mat-icon-button class="btn-properties" (click)="showProperties()" *ngIf="source.type != 'Else' && source.type != 'EndIf' && editable">
+    <mat-icon>live_help</mat-icon>
+  </button>
+</div>

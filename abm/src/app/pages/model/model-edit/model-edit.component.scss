@@ -1,0 +1,77 @@
+app-model-edit{
+    .additional-code .mat-form-field-wrapper, fury-list{
+        height: 100%;
+    }
+    fury-list{
+        overflow-x: hidden !important;
+    }
+    .mat-dialog-content{
+        max-height: 100% !important;
+        height: 645px;
+    }
+    .action-cell-command{
+        float: left;
+    }
+    .acction-cell{
+        width: 100%;
+        text-align: right;
+        min-width: 78px;
+    }
+    i.fa{
+        padding-left: 5px;
+        cursor: pointer;
+        font-size: 16px;
+    }
+    i.fa-plus{
+        float: left;
+        padding-top: 5px;
+        padding-right: 15px;
+    }
+    .cdk-column-passive{
+        width: 78px;
+    }
+    .accept-rule{
+        background-color: rgba(0, 0, 0, 0.07);
+        height: 51px;
+    }
+    .rule-code, .rule-code-value{
+        color: rgba(0, 0, 0, 0.6);
+        padding-top: 15px;
+        padding-left: 10px;        
+    } 
+    .rule-code-value{
+        padding-top: 5px;
+        font-size: 11px;
+    }
+    .rule-text{
+        caret-color: rgb(25, 118, 210);
+        color: rgba(0, 0, 0, 0.87);
+        padding-top: 0px;
+    }
+    .download-btn{
+        width: 32px;
+        height: 32px;
+    }
+    .download-btn .mat-button-wrapper{
+        display: inherit;
+        margin-left: 1px;
+        padding-top: 2px;
+    }
+    .cdk-column-rangeValues, .cdk-column-detailedAnalysis, .cdk-column-initialValue
+    , .cdk-column-generalAnalysisId, .cdk-column-FunctionType{
+        width: 35px;
+        text-align: center;
+    }
+    .cdk-column-modelNameRef, .cdk-column-generalAnalysisId, .cdk-column-isRef, .cdk-column-position{
+        width: 25px;
+        text-align: center;
+    }
+    .cdk-column-position{
+        text-align: center;
+    }
+    .mat-dialog-actions.ng-star-inserted{
+        border-top-style: solid;
+        border-top-color: #eee;
+        border-top-width: 2px;
+    }
+}

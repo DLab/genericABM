@@ -1,0 +1,49 @@
+<div mat-dialog-title fxLayout="row" fxLayoutAlign="space-between center">
+  <div>{{app.screen.SelectedModelProperty}}</div>
+  <button type="button" mat-icon-button tabindex="-1" [mat-dialog-close]="true">
+    <mat-icon>close</mat-icon>
+  </button>
+</div>
+
+<mat-dialog-content>
+  <div fxLayout="column" fxLayoutGap="8px">
+    <div class="person">
+      <div fxLayout="column" fxLayout.gt-sm="row" >
+        <ng-select [items]="types"
+          placeholder="{{app.screen.Tipo}}*"
+          bindLabel="code"
+          bindValue="id"
+          required
+          (change)="changeType()"
+          [clearable]="true"
+          [searchable]="true"
+          [(ngModel)]="type"
+          ngDefaultControl>
+          <ng-template ng-option-tmp let-item="item" let-item$="item$" let-index="index">
+            {{item.code}}
+          </ng-template>
+        </ng-select>
+      </div>
+      <div fxLayout="column" fxLayout.gt-sm="row" fxLayoutGap.gt-sm="24px">
+        <fury-scrollbar class="overflow-container" fxFlex="auto" >
+          <div *ngFor="let item of properties" class="sidenav-item">
+            <a [routerLink]=""
+              (click)="selectedItem(item)"
+              class="sidenav-item-link"
+              fxLayout="row"
+              fxLayoutAlign="start center"
+              matRipple>
+                <ng-container>
+                    <mat-icon class="icon">add_box</mat-icon>
+                    <span class="name">{{item.aliasName}}</span>
+                </ng-container>
+            </a>            
+          </div>
+        </fury-scrollbar>
+      
+      </div>
+    </div>
+  </div>
+
+</mat-dialog-content>
+
