@@ -380,7 +380,7 @@ public class ReportesUtil {
 					bw = new BufferedWriter(new FileWriter(file));
 					String sep = ";";
 					bw.write("comb;paso");
-					System.out.println("**" + names);
+					System.out.println("*pp*" + names);
 					for (String name : names)
 					{
 						bw.write(sep);
@@ -405,16 +405,20 @@ public class ReportesUtil {
 						{
 							bw.write(n + ";");
 							bw.write(i + ";");
+							String sep2 = "";
 							for (String name : names)
 							{
 								medians = (double[])median.get(name);
 								double[] means = (double[])mean.get(name);
 								double[] stdDevs = (double[])stdDev.get(name);
+								bw.write(sep2);
 								bw.write("" + medians[i]);
 								bw.write(";");
 								bw.write("" + means[i]);
 								bw.write(";");
-								bw.write("" + stdDevs[i]);								
+								bw.write("" + stdDevs[i]);
+								sep2 = ";";
+								bw.flush();
 							}
 							bw.newLine();
 							bw.flush();

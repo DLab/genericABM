@@ -55,7 +55,7 @@ public class Parser
 	}
 	private boolean isFunctionNode(String name)
 	{
-		return name.equals("sin") || name.equals("cos") || name.equals("tan") || name.equals("sqrt") || name.equals("tanh") || name.equals("sign")  
+		return name.equals("sin") || name.equals("cos") || name.equals("tan") || name.equals("sqrt") || name.equals("tanh") || name.equals("sign") || name.equals("abs")  
 				|| name.equals("normalizer") || name.equals("logistic") || name.equals("sum") || alias.containsKey(name);
 	}
 	@SuppressWarnings("unchecked")

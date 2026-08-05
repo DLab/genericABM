@@ -155,6 +155,7 @@ public class Agent implements Cloneable
 		//System.out.println(model.getName() + "**" + model.getIdProcess() + "**" + model.getNumCombination() + "**" + model.getNumSimulation() + "**" + model.getNumStep() );
 		if (model.isKqmlIntegration())
 		{
+			//System.out.println(msg.getPerformative() + "**" + msg.getReceiver().getName() + "**" + msg.getSender().getName());
 			KqmlIntegration.getInstance().addItem(new KqmlItem(model, msg.getSender(), msg.getReceiver()));
 		}
 		if (msg.getPerformative() == MessageType.Ask) 

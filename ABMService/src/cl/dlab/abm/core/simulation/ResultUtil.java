@@ -57,7 +57,7 @@ public class ResultUtil
 	}
 	public synchronized void meanAndStd(Model model, ArrayList<Data> data) throws Exception
 	{
-		System.out.println("Alldata:" + data.size());
+		//System.out.println("Alldata:" + data.size());
 		if (PropertyUtil.getProperty("save-all-data").equals("true"))
 		{
 			File file = new File(InitializeServlet.REAL_PATH + "/sim/sim_" + idProcess + "_" + totalProcessed + ".out");

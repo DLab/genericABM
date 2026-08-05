@@ -75,7 +75,8 @@ public class Sim implements Runnable
 					{
 						agents.add(agent);
 					}
-				}		
+				}	
+				//System.out.println("agents.size:" + agents.size());
 				Collections.shuffle(agents);
 				model.setNumInteractionAgents(agents.size());
 				model.setNumNoInteractionAgents(list.size() - agents.size());
@@ -177,6 +178,7 @@ public class Sim implements Runnable
 			}
 			for (int i = 0; i < numSteps; i++)
 			{
+				//System.out.println("step:" + i);
 				this.model.setNumStep(i);
 				this.model.clearUmbral(UmbralGenerationType.BY_STEP);
 				this.model.tmpAgents = new HashMap<String, ArrayList<? extends Agent>>();

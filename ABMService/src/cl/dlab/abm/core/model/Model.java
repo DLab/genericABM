@@ -176,6 +176,7 @@ public class Model implements Cloneable
 		{
 			Agent agent = agentClass.getConstructor().newInstance();
 			agent.setId(i);
+			agent.setName(getName() + "-" + i);
 			agent.setValues(this);
 			((ArrayList<Agent>)agents).add(agent);
 		}
@@ -454,9 +455,12 @@ public class Model implements Cloneable
 		array.put(oAgent);
 		
 		long t = System.currentTimeMillis();
-		String response = Utils.sendData(URL_TGATNN_ONE, "POST", new Param("data", json.toString()));
-		System.out.println("Tiempo en integrar tgatnn-one:" + (System.currentTimeMillis() - t));
-		return new JSONObject(response);
+		//String response = Utils.sendData(URL_TGATNN_ONE, "POST", new Param("data", json.toString()));
+		//System.out.println("Tiempo en integrar tgatnn-one:" + (System.currentTimeMillis() - t));
+		//return new JSONObject(response);
+		json = new JSONObject();
+		json.put("tx", 10000);
+		return json;
 	}
 	
 	public void sendAllDataTgatnn() throws Exception
@@ -477,8 +481,8 @@ public class Model implements Cloneable
 			}
 		}
 		long t = System.currentTimeMillis();
-		Utils.sendData(URL_TGATNN, "POST", new Param("data", json.toString()));
-		System.out.println("Tiempo en integrar tgatnn:" + (System.currentTimeMillis() - t));
+		//Utils.sendData(URL_TGATNN, "POST", new Param("data", json.toString()));
+		//System.out.println("Tiempo en integrar tgatnn:" + (System.currentTimeMillis() - t));
 	}
 
 }

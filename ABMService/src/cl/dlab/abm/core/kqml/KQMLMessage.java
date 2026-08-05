@@ -2,20 +2,22 @@ package cl.dlab.abm.core.kqml;
 
 import org.json.JSONObject;
 
+import cl.dlab.abm.core.model.Agent;
+
 public class KQMLMessage
 {
 	private MessageType performative;
-    private String sender;
-    private String receiver;
+    private Agent sender;
+    private Agent receiver;
     private JSONObject content;
     private String language;
     private String ontology;
 
-    public KQMLMessage(MessageType performative, String sender, String receiver, String content, String language, String ontology) 
+    public KQMLMessage(MessageType performative, Agent sender, Agent receiver, String content, String language, String ontology) 
     {
     	this(performative, sender, receiver, new JSONObject().put("message", content), language, ontology);
     }
-    public KQMLMessage(MessageType performative, String sender, String receiver, JSONObject content, String language, String ontology) {
+    public KQMLMessage(MessageType performative, Agent sender, Agent receiver, JSONObject content, String language, String ontology) {
         this.performative = performative;
         this.sender = sender;
         this.receiver = receiver;
@@ -35,7 +37,7 @@ public class KQMLMessage
 	/**
 	 * @return the sender
 	 */
-	public String getSender()
+	public Agent getSender()
 	{
 		return sender;
 	}
@@ -43,7 +45,7 @@ public class KQMLMessage
 	/**
 	 * @return the receiver
 	 */
-	public String getReceiver()
+	public Agent getReceiver()
 	{
 		return receiver;
 	}

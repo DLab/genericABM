@@ -229,8 +229,8 @@ public class JavaClassGenerator
 		StringBuilder code = new StringBuilder();
 		if (kqmlIntegration)
 		{
-			code.append("\ncl.dlab.abm.core.kqml.KQMLMessage msgi = agenti.receiveMessage(model, new cl.dlab.abm.core.kqml.KQMLMessage(cl.dlab.abm.core.kqml.MessageType.Ask, agenti.getName(), agenti.getName(), \"give-me-your-properties\", \"KIF\", model.getName()));\n");
-			code.append("\ncl.dlab.abm.core.kqml.KQMLMessage msgj = agentj.receiveMessage(model, new cl.dlab.abm.core.kqml.KQMLMessage(cl.dlab.abm.core.kqml.MessageType.Ask, agenti.getName(), agentj.getName(), \"give-me-your-properties\", \"KIF\", model.getName()));\n");
+			code.append("\ncl.dlab.abm.core.kqml.KQMLMessage msgi = agenti.receiveMessage(model, new cl.dlab.abm.core.kqml.KQMLMessage(cl.dlab.abm.core.kqml.MessageType.Ask, agenti, agenti, \"give-me-your-properties\", \"KIF\", model.getName()));\n");
+			code.append("\ncl.dlab.abm.core.kqml.KQMLMessage msgj = agentj.receiveMessage(model, new cl.dlab.abm.core.kqml.KQMLMessage(cl.dlab.abm.core.kqml.MessageType.Ask, agenti, agentj, \"give-me-your-properties\", \"KIF\", model.getName()));\n");
 			code.append("\norg.json.JSONObject tgannt = model.sendDataTgatnn(agenti, agentj);\n");
 			code.append("if (model.getNumStep() <= tgannt.getInt(\"tx\")) {");
 			
@@ -287,8 +287,8 @@ public class JavaClassGenerator
 		}
 		if (kqmlIntegration)
 		{
-			code.append("\nagenti.receiveMessage(model, new cl.dlab.abm.core.kqml.KQMLMessage(cl.dlab.abm.core.kqml.MessageType.Update, agenti.getName(), agenti.getName(), msgi.getContent(), \"JSON\", model.getName()));\n");
-			code.append("\nagentj.receiveMessage(model, new cl.dlab.abm.core.kqml.KQMLMessage(cl.dlab.abm.core.kqml.MessageType.Update, agentj.getName(), agentj.getName(), msgj.getContent(), \"JSON\", model.getName()));\n");
+			code.append("\nagenti.receiveMessage(model, new cl.dlab.abm.core.kqml.KQMLMessage(cl.dlab.abm.core.kqml.MessageType.Update, agenti, agenti, msgi.getContent(), \"JSON\", model.getName()));\n");
+			code.append("\nagentj.receiveMessage(model, new cl.dlab.abm.core.kqml.KQMLMessage(cl.dlab.abm.core.kqml.MessageType.Update, agentj, agentj, msgj.getContent(), \"JSON\", model.getName()));\n");
 			code.append("}else{model.updateDataTgatnn(agenti, agentj, tgannt);}");
 			code.append("\nmodel.sendDataTgatnn(agenti, agentj);\n");
 		}
@@ -696,8 +696,8 @@ public class JavaClassGenerator
 			}
 			hsActions.put((String)rule.get("trueActionName"), idOk);
 			hsActions.put((String)rule.get("falseActionName"), idOk);
-			hsActions.put((String)rule.get("beforeActionName"), idOk);
-			hsActions.put((String)rule.get("afterActionName"), idOk);
+			hsActions.put((String)rule.get("beforeActionName"), 0);
+			hsActions.put((String)rule.get("afterActionName"), 0);
 			rulesSources.add(new Source(name, null, PACKAGE_ + packageName + PUBLIC_CLASS + name
 					+ " extends cl.dlab.abm.core.model.Rule{" + ruleConstructor + isOk 
 					+ buff + " return " + javaLatex + ";}}"));
